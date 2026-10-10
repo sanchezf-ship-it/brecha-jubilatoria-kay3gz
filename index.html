@@ -90,31 +90,70 @@ select { width: 100%; font: inherit; font-size: 15px; padding: 9px 10px; border:
 .leyenda span { display: inline-flex; align-items: center; gap: 5px; }
 .leyenda i { width: 10px; height: 10px; border-radius: 2px; display: inline-block; }
 .leyenda .mejor { width: 12px; height: 12px; border: 2px solid var(--text); background: transparent; }
-.barras { position: relative; margin-top: 14px; }
-.fila { display: grid; grid-template-columns: 150px 1fr 150px; align-items: center; gap: 10px; padding: 3px 0; cursor: pointer; border-radius: 6px; }
+/* Cada instrumento es un grupo con dos barras: B (consumir el capital) y A (vivir de los intereses).
+   La pista completa es el 100% del sueldo neto; lo que pasa del 100% se dibuja lleno y con corte. */
+.barras { position: relative; margin-top: 10px; }
+.comp-eje, .grupo { display: grid; grid-template-columns: 150px minmax(0, 1fr); column-gap: 12px; }
+.grupo { padding: 6px 0; border-top: 1px solid var(--grid); border-radius: 6px; }
+.grupo .nom { grid-row: span 2; align-self: center; font-size: 14px; color: var(--text-2); text-align: right; min-width: 0; }
+.grupo.sel .nom { font-weight: 700; color: var(--text); }
+.fila, .ejeb { grid-column: 2; display: grid; grid-template-columns: 22px minmax(0, 1fr) 176px; align-items: center; gap: 8px; padding: 2px 6px; }
+.fila { cursor: pointer; border-radius: 6px; }
 .fila:hover { background: var(--bg); }
-.fila.sel .nom { font-weight: 700; color: var(--text); }
-.fila .nom { font-size: 14px; color: var(--text-2); text-align: right; }
-.pista { position: relative; height: 26px; }
-.barra { position: absolute; left: 0; top: 3px; height: 20px; border-radius: 0 4px 4px 0; min-width: 2px; }
+.fila.sel { background: color-mix(in srgb, var(--accent) 12%, transparent); }
+.fila:focus-visible { outline: 2px solid var(--accent); outline-offset: 1px; }
+.mlet { font-weight: 700; font-size: 13px; color: var(--text-2); text-align: center; }
+.ejeb { font-size: 12px; color: var(--muted); padding-bottom: 2px; }
+.ejeb .esc { display: flex; justify-content: space-between; }
+.pista { position: relative; height: 24px; }
+.barra { position: absolute; left: 0; top: 4px; height: 16px; border-radius: 0 4px 4px 0; min-width: 3px; }
+.barra.modA { background-image: repeating-linear-gradient(135deg, rgba(255,255,255,.42) 0 3px, transparent 3px 7px); }
+.barra.corte { border-radius: 0; clip-path: polygon(0 0, calc(100% - 10px) 0, 100% 25%, calc(100% - 10px) 50%, 100% 75%, calc(100% - 10px) 100%, 0 100%); }
 .barra.mejor { outline: 2px solid var(--text); outline-offset: 2px; }
-.ref100 { position: absolute; top: -4px; bottom: -4px; width: 0; border-left: 1.5px dashed var(--muted); pointer-events: none; }
-.ref100 span { position: absolute; top: -16px; left: 4px; font-size: 11px; color: var(--muted); white-space: nowrap; }
-.fila .val { font-size: 13.5px; }
+.ref100 { position: absolute; left: 100%; top: -3px; bottom: -3px; width: 0; border-left: 1.5px dashed var(--muted); pointer-events: none; }
+.fila .val { font-size: 13.5px; min-width: 0; }
 .fila .val b { font-size: 14.5px; }
 .fila .val small { display: block; color: var(--muted); font-size: 12px; }
-.na { font-size: 13px; color: var(--muted); font-style: italic; padding-left: 4px; line-height: 26px; }
+.na { font-size: 13px; color: var(--muted); font-style: italic; padding-left: 4px; line-height: 24px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
 .nota-inm { font-size: 12.5px; color: var(--muted); margin: 12px 0 0; }
-details { margin-top: 12px; font-size: 13.5px; }
-summary { cursor: pointer; color: var(--accent); font-weight: 600; }
-table { border-collapse: collapse; width: 100%; margin-top: 10px; font-variant-numeric: tabular-nums; }
-th, td { padding: 6px 8px; border-bottom: 1px solid var(--border); text-align: right; }
-th:first-child, td:first-child { text-align: left; }
-th { font-size: 12.5px; color: var(--text-2); font-weight: 600; }
+.inm-det { font-size: 13.5px; color: var(--text-2); margin: 6px 0 0; }
+.leyenda .modB-ley { background: var(--good); }
+.leyenda .modA-ley { background-color: var(--good); background-image: repeating-linear-gradient(135deg, rgba(255,255,255,.5) 0 2px, transparent 2px 4px); }
+.leyenda .corte-ley { width: 16px; background: var(--serious); border-radius: 0; clip-path: polygon(0 0, 60% 0, 100% 25%, 60% 50%, 100% 75%, 60% 100%, 0 100%); }
+.leyenda .lin { width: 18px; height: 0; border-radius: 0; border-top: 2px solid var(--accent); }
+.leyenda .lin.pt { border-top: 2px dashed var(--text-2); }
+
+/* Titular: la conclusión en una frase, arriba del relato */
+.titular { margin: 0 0 16px; padding: 16px 18px; font-size: 22px; line-height: 1.35; font-weight: 700; text-wrap: balance;
+  background: color-mix(in srgb, var(--brecha) 9%, var(--surface)); border: 1px solid color-mix(in srgb, var(--brecha) 35%, var(--border)); border-radius: 10px; }
+.titular.ok { background: color-mix(in srgb, var(--good) 9%, var(--surface)); border-color: color-mix(in srgb, var(--good) 35%, var(--border)); }
+.titular .chip-sens { font-size: 12px; vertical-align: 3px; }
+
+/* Secciones plegables (<details>) */
+details.plegable > summary { list-style: none; display: flex; align-items: center; gap: 8px; cursor: pointer; color: var(--text-2); font-weight: 600; min-height: 32px; }
+details.plegable > summary::-webkit-details-marker { display: none; }
+details.plegable > summary::before { content: "▸"; flex: none; width: 14px; color: var(--accent); font-size: 14px; transition: transform .15s ease; }
+details.plegable[open] > summary::before { transform: rotate(90deg); }
+details.plegable > summary h2 { margin: 0; }
+details.plegable[open] > summary { margin-bottom: 12px; }
+details.plegable > summary:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; border-radius: 4px; }
+.fondo-total { margin: 10px 0 4px; font-size: 15px; color: var(--text); }
 
 /* Gráfico de brecha */
-.desliz input[type=range] { width: 100%; accent-color: var(--accent); }
-.desliz .lim { display: flex; justify-content: space-between; font-size: 12px; color: var(--muted); }
+/* Cuánto cubre la jubilación según el sueldo: una barra apilada por persona de ejemplo, más "Vos".
+   Cada barra es el 100% del sueldo neto de esa persona (mismos colores que la barra de nivel de vida). */
+.cob { display: grid; gap: 4px; margin-top: 10px; }
+.cob-fila { display: grid; grid-template-columns: 240px minmax(0, 1fr) 150px; align-items: center; gap: 12px; padding: 6px 8px; min-height: 44px; border: 1px solid transparent; border-radius: 8px; cursor: pointer; }
+.cob-fila:hover { background: var(--bg); }
+.cob-fila:focus-visible { outline: 2px solid var(--accent); outline-offset: 1px; }
+.cob-fila.vos { background: color-mix(in srgb, var(--accent) 10%, var(--surface)); border-color: var(--accent); }
+.cob-nom { font-size: 14px; color: var(--text-2); min-width: 0; }
+.cob-nom b { color: var(--text); }
+.cob-vos { display: inline-block; margin-left: 6px; padding: 0 6px; font-size: 12px; font-weight: 700; color: #fff; background: var(--accent); border-radius: 4px; vertical-align: 1px; }
+.cob-fila .nivel { height: 28px; }
+.cob-monto { font-size: 14px; text-align: right; min-width: 0; }
+.cob-monto small { display: block; font-size: 12px; color: var(--muted); }
+.cob-nota { margin: 12px 0 0; font-size: 14px; color: var(--text-2); }
 .graf { position: relative; margin-top: 10px; }
 .graf svg { width: 100%; height: auto; display: block; }
 .graf text { fill: var(--muted); font-size: 11px; font-family: inherit; }
@@ -136,7 +175,8 @@ footer .param div { display: flex; justify-content: space-between; border-bottom
 .ejemplos button.activo { border-color: var(--accent); background: color-mix(in srgb, var(--accent) 12%, var(--surface)); }
 
 /* Mejora 5: sensibilidad del rendimiento */
-.sens { grid-column: 1 / -1; border-top: 1px solid var(--border); padding-top: 14px; }
+.sens { grid-column: 1 / -1; border-top: 1px solid var(--border); padding-top: 10px; }
+#avisoSens { grid-column: 1 / -1; margin-top: 0; }
 .sens-fila { display: flex; align-items: center; gap: 12px; flex-wrap: wrap; }
 .sens-fila input[type=range] { flex: 1; min-width: 180px; accent-color: var(--accent); }
 .sens-fila output { font-weight: 700; font-size: 17px; min-width: 64px; }
@@ -155,8 +195,8 @@ footer .param div { display: flex; justify-content: space-between; border-bottom
 .nivel-ley i { width: 10px; height: 10px; border-radius: 2px; display: inline-block; align-self: center; }
 
 /* Mejora 3: perfiles e hipótesis */
-.fila .nom small { display: block; font-size: 11px; color: var(--muted); font-weight: 400; line-height: 1.2; }
-.fila.hip { box-shadow: inset 3px 0 0 var(--accent); background: color-mix(in srgb, var(--accent) 6%, transparent); }
+.grupo .nom small { display: block; font-size: 11px; color: var(--muted); font-weight: 400; line-height: 1.2; }
+.grupo.hip { box-shadow: inset 3px 0 0 var(--accent); background: color-mix(in srgb, var(--accent) 6%, transparent); }
 .leyenda .hipm { width: 4px; height: 12px; background: var(--accent); border-radius: 1px; }
 
 /* Mejora 4: evolución del fondo */
@@ -165,7 +205,6 @@ footer .param div { display: flex; justify-content: space-between; border-bottom
 .v small { font-size: 0.6em; font-weight: 600; color: var(--text-2); }
 .graf svg { touch-action: pan-y; }
 .graf text { font-size: 12px; }
-#tabla { overflow-x: auto; }
 .ref-ley { width: 0; height: 12px; border-left: 1.5px dashed var(--muted); }
 
 /* Resumen fijo para celular: aparece cuando las entradas quedan fuera de la pantalla */
@@ -194,10 +233,11 @@ footer .param div { display: flex; justify-content: space-between; border-bottom
 
   /* Texto nunca por debajo de 14 px */
   .aviso, .t, .ayuda, .error, .seg label, .seg small, .tarjeta .et, .tarjeta .d, .estado, .relato .nota, .leyenda,
-  .fila .val, .fila .val small, .fila .nom small, .na, .nota-inm, details, th, td, .desliz .lim, .tip,
+  .fila .val, .fila .val small, .grupo .nom small, .titular .chip-sens, .na, .nota-inm, details, th, td, .tip, .cob-vos, .cob-monto small,
   footer, .ejemplos button, .ejemplos small, .sens-fila button, .aviso-sens, .chip-sens, .nivel div,
-  .nivel-ley, .resumen, .resumen span, .v small, small { font-size: 14px; }
-  #graf text, #grafFondo text { font-size: 14px; }
+  .nivel-ley, .resumen, .resumen span, .v small, small, .mlet, .ejeb, .inm-det, details.plegable > summary { font-size: 14px; }
+  .titular { font-size: 20px; padding: 14px; }
+  #grafFondo text { font-size: 14px; }
 
   /* Entradas apiladas y controles de al menos 44 px */
   .entradas { grid-template-columns: 1fr; grid-template-areas: none; gap: 16px; }
@@ -214,7 +254,7 @@ footer .param div { display: flex; justify-content: space-between; border-bottom
   #rendMaxT { grid-area: mx; text-align: right; }
   #rendVal { grid-area: v; }
   #rendBase { grid-area: b; min-height: 44px; }
-  summary { padding-block: 12px; }
+  details.plegable > summary { min-height: 44px; }
 
   /* Tarjetas de 1 por fila, números grandes */
   .tarjetas { grid-template-columns: 1fr; gap: 10px; margin-bottom: 12px; }
@@ -226,17 +266,24 @@ footer .param div { display: flex; justify-content: space-between; border-bottom
   .nivel-ley span { display: block; }
   .nivel-ley i { margin-right: 6px; vertical-align: -1px; }
 
-  /* Comparador: nombre y valor arriba, barra a todo el ancho abajo */
-  .fila { grid-template-columns: minmax(0, 1fr) auto; grid-template-areas: "nom val" "pista pista"; gap: 2px 10px; padding: 8px 8px 10px; }
-  .fila .nom { grid-area: nom; text-align: left; font-size: 15px; min-width: 0; }
-  .fila .val { grid-area: val; text-align: right; }
-  .fila .pista { grid-area: pista; height: 22px; }
-  .barra { top: 2px; height: 18px; }
-  .ref100 span { display: none; }  /* la línea del 100% está explicada en la leyenda */
+  /* Comparador: nombre arriba y, debajo, una fila por modalidad (B y A) con ancho fijo para el valor */
+  .comp-eje, .grupo { grid-template-columns: minmax(0, 1fr); }
+  .grupo .nom { grid-row: auto; text-align: left; font-size: 15px; padding: 2px 6px 4px; }
+  /* en el celular el valor va debajo de la barra, así la barra usa todo el ancho */
+  .fila, .ejeb { grid-column: 1; grid-template-columns: 22px minmax(0, 1fr); column-gap: 8px; row-gap: 0; }
+  .fila { min-height: 44px; padding-block: 4px; }
+  .fila .mlet { grid-row: span 2; }
+  .fila .val { grid-column: 2; text-align: left; line-height: 1.3; }
+  .fila .val small { display: inline; margin-left: 6px; }
+  .ejeb > span:last-child { display: none; }
+  .fila .pista:has(.na) { height: auto; min-height: 24px; }
+  .na { white-space: normal; overflow: visible; line-height: 1.3; padding-block: 3px; }
   .leyenda { gap: 6px 14px; }
 
-  /* Tabla: se desplaza dentro de su propio recuadro */
-  #tabla table { min-width: 560px; }
+  /* Cuánto cubre la jubilación: nombre y sueldo arriba, barra a todo el ancho y brecha debajo */
+  .cob-fila { grid-template-columns: minmax(0, 1fr); gap: 4px; padding: 8px; }
+  .cob-monto { text-align: left; }
+  .cob-monto small { display: inline; margin-left: 4px; }
 
   /* Resumen fijo arriba al bajar por la página */
   .resumen {
@@ -258,6 +305,8 @@ footer .param div { display: flex; justify-content: space-between; border-bottom
   body { background: #fff; }
   section, .tarjeta { break-inside: avoid; }
   .resumen, .tip { display: none !important; }
+  details.plegable > summary::before { display: none; }
+  details.plegable::details-content { content-visibility: visible; display: contents; }  /* todo desplegado al imprimir */
 }
 </style>
 </head>
@@ -289,7 +338,7 @@ footer .param div { display: flex; justify-content: space-between; border-bottom
         <div class="ejemplos" id="ejemplos" aria-label="Personas de ejemplo"></div>
       </div>
       <div class="e-mod">
-        <span class="t">Modalidad de retiro</span>
+        <span class="t">Modalidad para el detalle</span>
         <div class="seg" role="radiogroup">
           <label><input type="radio" name="mod" value="B" checked><span><b>B · Consumir el capital</b><small id="txtModB"></small></span></label>
           <label><input type="radio" name="mod" value="A"><span><b>A · Vivir de los intereses</b><small>El capital queda intacto</small></span></label>
@@ -300,18 +349,21 @@ footer .param div { display: flex; justify-content: space-between; border-bottom
         <select id="instr"></select>
         <div class="ayuda">En el comparador se muestran todos.</div>
       </div>
-      <div class="sens" id="sens">
-        <label class="t" for="rend">Rendimiento real anual de <span id="sensNom"></span> <span style="font-weight:400">(sensibilidad)</span></label>
-        <div class="sens-fila">
-          <span class="num ayuda" style="margin:0" id="rendMinT"></span>
-          <input id="rend" type="range">
-          <span class="num ayuda" style="margin:0" id="rendMaxT"></span>
-          <output class="num" id="rendVal"></output>
-          <button type="button" id="rendBase"></button>
+      <details class="sens plegable" id="detSens">
+        <summary>Sensibilidad del rendimiento (avanzado)</summary>
+        <div id="sens">
+          <label class="t" for="rend">Rendimiento real anual de <span id="sensNom"></span> <span style="font-weight:400">(sensibilidad)</span></label>
+          <div class="sens-fila">
+            <span class="num ayuda" style="margin:0" id="rendMinT"></span>
+            <input id="rend" type="range">
+            <span class="num ayuda" style="margin:0" id="rendMaxT"></span>
+            <output class="num" id="rendVal"></output>
+            <button type="button" id="rendBase"></button>
+          </div>
         </div>
-        <div class="aviso-sens oculto" id="avisoSens" role="status">⚠ Sensibilidad: escenario hipotético, no el caso base del trabajo.</div>
-      </div>
-      <div class="sens ayuda oculto" id="sensNo" style="margin:0">El Inmobiliario no tiene un rendimiento único: sale de la simulación de compra y alquiler, así que no admite sensibilidad.</div>
+        <div class="ayuda oculto" id="sensNo" style="margin:0">El Inmobiliario no tiene un rendimiento único: sale de la simulación de compra y alquiler, así que no admite sensibilidad.</div>
+      </details>
+      <div class="aviso-sens oculto" id="avisoSens" role="status">⚠ Sensibilidad: escenario hipotético, no el caso base del trabajo.</div>
     </div>
   </section>
 
@@ -331,6 +383,9 @@ footer .param div { display: flex; justify-content: space-between; border-bottom
       <div class="nivel-ley num" id="nivelLey"></div>
     </section>
 
+    <!-- Titular: la conclusión en una frase -->
+    <p class="titular" id="titular" role="status"></p>
+
     <!-- 3. Relato -->
     <section class="relato" aria-label="Relato">
       <h2>Qué dicen tus números</h2>
@@ -342,9 +397,14 @@ footer .param div { display: flex; justify-content: space-between; border-bottom
       <div class="comp-cab">
         <h2 id="compTit" style="margin:0">Aporte requerido por instrumento</h2>
         <div class="leyenda">
+          <span><i class="modB-ley"></i><span><b>B</b> · consumir el capital en <span id="leyAnios"></span> años</span></span>
+          <span><i class="modA-ley"></i><span><b>A</b> · vivir de los intereses (el capital queda intacto)</span></span>
+        </div>
+        <div class="leyenda">
           <span><i style="background:var(--good)"></i>✓ Alcanzable</span>
           <span><i style="background:var(--serious)"></i>✕ No alcanzable (≥ 100% del neto)</span>
-          <span><i class="mejor"></i>Mejor opción</span>
+          <span><i class="corte-ley"></i>Supera el 100% del neto (barra cortada)</span>
+          <span><i class="mejor"></i>Mejor opción de cada modalidad</span>
           <span><i class="ref-ley"></i>100% del neto</span>
           <span><i class="hipm"></i>Perfiles de la hipótesis (moderado y agresivo)</span>
         </div>
@@ -353,46 +413,46 @@ footer .param div { display: flex; justify-content: space-between; border-bottom
       <div id="compSinBrecha" class="relato oculto"><p style="margin-top:12px">No hay brecha: según el modelo, el haber neto supera al sueldo neto, así que no hace falta aportar.</p></div>
       <div class="barras" id="barras"></div>
       <p class="nota-inm">Inmobiliario: calculado con simulación de compra y alquiler de unidades enteras.</p>
-      <details>
-        <summary>Ver tabla con ambas modalidades</summary>
-        <div id="tabla"></div>
-      </details>
+      <p class="inm-det num" id="inmDet"></p>
     </section>
 
     <!-- Evolución del fondo -->
     <section aria-label="Evolución del fondo">
-      <h2 id="fondoTit">Evolución del fondo</h2>
-      <div class="ayuda" id="fondoSub" style="margin:-6px 0 6px"></div>
-      <div id="fondoMsg" class="relato oculto"><p></p></div>
-      <div class="graf" id="grafFondo">
-        <svg id="svgFondo" viewBox="0 0 720 280" role="img" aria-label="Saldo del fondo mes a mes"></svg>
-        <div class="tip" id="tipFondo"></div>
-      </div>
-      <div class="ayuda" id="fondoNota"></div>
+      <details class="plegable" id="detFondo" data-abrir-ancho>
+        <summary><h2 id="fondoTit">Evolución del fondo</h2></summary>
+        <div class="ayuda" id="fondoSub" style="margin:0 0 6px"></div>
+        <div id="fondoMsg" class="relato oculto"><p></p></div>
+        <div class="leyenda" id="fondoLey"><span><i class="lin"></i><span id="fondoLeySaldo">Saldo del fondo</span></span><span><i class="lin pt"></i>Total aportado</span></div>
+        <div class="graf" id="grafFondo">
+          <svg id="svgFondo" viewBox="0 0 720 280" role="img" aria-label="Saldo del fondo y total aportado mes a mes"></svg>
+          <div class="tip" id="tipFondo"></div>
+        </div>
+        <p class="fondo-total num" id="fondoTotal"></p>
+        <div class="ayuda" id="fondoNota"></div>
+      </details>
     </section>
   </div>
 
-  <!-- 5. Deslizador -->
-  <section aria-label="Cómo crece la brecha">
-    <h2>Cómo crece la brecha con el sueldo</h2>
-    <div class="desliz">
-      <input id="desliz" type="range" min="0" max="1000" step="1" aria-label="Sueldo neto">
-      <div class="lim num"><span id="limMin"></span><span id="limMax"></span></div>
-    </div>
-    <div class="graf" id="graf">
-      <svg id="svg" viewBox="0 0 720 260" role="img" aria-label="Brecha como porcentaje del sueldo neto según el sueldo neto"></svg>
-      <div class="tip" id="tip"></div>
-    </div>
-    <div class="ayuda">Brecha mensual como % del sueldo neto. Eje horizontal en escala logarítmica. Mové el deslizador, o pasá el mouse o tocá la curva para ver cada valor.</div>
+  <!-- 5. Cuánto cubre la jubilación según el sueldo (personas de ejemplo + "Vos") -->
+  <section aria-labelledby="cobTit">
+    <h2 id="cobTit">Cuánto cubre la jubilación según el sueldo</h2>
+    <div class="nivel-ley" style="margin-top:0"><span><i style="background:var(--accent)"></i>Haber jubilatorio neto</span><span><i style="background:var(--brecha)"></i>Brecha</span></div>
+    <div class="ayuda">Cada barra es el 100% del sueldo neto de esa persona. Tocá una barra para cargar ese sueldo.</div>
+    <div class="cob" id="cob"></div>
+    <p class="cob-nota num" id="cobNota"></p>
   </section>
 
   <!-- 6. Pie -->
   <footer>
     <section>
-      <h2>Supuestos y limitaciones</h2>
-      <ul id="supuestos"></ul>
-      <h2 style="margin-top:14px">Parámetros usados</h2>
-      <div class="param num" id="params"></div>
+      <details class="plegable" id="detSupuestos">
+        <summary><h2>Supuestos y limitaciones</h2></summary>
+        <ul id="supuestos"></ul>
+      </details>
+      <details class="plegable" id="detParams" style="margin-top:10px">
+        <summary><h2>Parámetros usados</h2></summary>
+        <div class="param num" id="params"></div>
+      </details>
       <p style="margin:0;color:var(--muted)">Es una herramienta de apoyo para la defensa del TFG. No es asesoramiento financiero ni una predicción: son resultados de un modelo con supuestos.</p>
     </section>
   </footer>
@@ -939,11 +999,9 @@ const PARAMETROS = {
 
   // ---------- DOM ----------
   const el = id => document.getElementById(id);
-  const inp = el('sueldo'), sel = el('instr'), desliz = el('desliz');
+  const inp = el('sueldo'), sel = el('instr');
   INSTR.forEach(k => { const o = document.createElement('option'); o.value = k; o.textContent = nombre(k) + ' · ' + PERFIL[k]; sel.appendChild(o); });
   el('txtModB').textContent = 'Se agota en ' + num(J.anios_retiro, 1) + ' años';
-  el('limMin').textContent = $(NETO_MIN);
-  el('limMax').textContent = $(NETO_MAX);
 
   const estado = { neto: 1000000, mod: 'B', instr: 'SP500', rSens: null };  // rSens = null: rendimiento base del JSON
 
@@ -958,16 +1016,6 @@ const PARAMETROS = {
   rend.min = REND_MIN; rend.max = REND_MAX; rend.step = REND_PASO;
   el('rendMinT').textContent = pct(REND_MIN, 0); el('rendMaxT').textContent = '+' + pct(REND_MAX, 0);
   const rElegido = () => estado.rSens !== null ? estado.rSens : R[estado.instr];
-
-  // deslizador logarítmico
-  const aDesliz = n => Math.round(1000 * Math.log(n / NETO_MIN) / Math.log(NETO_MAX / NETO_MIN));
-  function desdeDesliz(v) {
-    if (+v <= 0) return MIN_R;
-    if (+v >= 1000) return MAX_R;
-    const n = NETO_MIN * Math.pow(NETO_MAX / NETO_MIN, v / 1000);
-    const paso = n < 2e6 ? 5000 : n < 1e7 ? 10000 : 50000;
-    return Math.min(MAX_R, Math.max(MIN_R, Math.round(n / paso) * paso));
-  }
 
   // ---------- cálculo + render ----------
   function valor(o, mod, k) { const v = o[mod][k]; return v === undefined ? null : v; }
@@ -992,6 +1040,7 @@ const PARAMETROS = {
 
   function render() {
     const N = estado.neto;
+    renderCobertura(N >= MIN_R && N <= MAX_R ? N : null);
     const err = el('errorSueldo');
     if (!(N >= MIN_R && N <= MAX_R)) {
       err.textContent = isNaN(N)
@@ -1001,7 +1050,6 @@ const PARAMETROS = {
       el('resultados').classList.add('oculto');
       el('ayudaSueldo').textContent = '';
       el('rNeto').textContent = 'fuera de rango'; el('rBrecha').textContent = '—'; el('rAporte').textContent = '—';
-      dibujarGrafico(null);
       return;
     }
     err.classList.add('oculto');
@@ -1048,10 +1096,9 @@ const PARAMETROS = {
       }
     }
 
+    renderTitular(o);
     renderRelato(o);
     renderComparador(o);
-    renderTabla(o);
-    dibujarGrafico(N);
     dibujarFondo(N, o);
     renderResumen(o);
   }
@@ -1097,6 +1144,52 @@ const PARAMETROS = {
       : '<span><i style="background:var(--accent)"></i>El haber jubilatorio neto (<b>' + $(o.haber_neto) + '</b>) cubre todo el sueldo neto de hoy (' + $(o.neto) + ') y lo supera en ' + $(o.haber_neto - o.neto) + '. No hay brecha.</span>';
   }
 
+  // Titular: la conclusión en una frase, con la modalidad y el instrumento elegidos
+  function renderTitular(o) {
+    const mod = estado.mod, k = estado.instr, t = el('titular');
+    const sens = estado.rSens !== null && financiero(k);
+    const chip = sens ? ' <span class="chip-sens">sensibilidad</span>' : '';
+    if (o.brecha <= 0) {
+      t.className = 'titular ok';
+      t.innerHTML = 'Tu jubilación cubriría todo tu sueldo actual: no hay brecha.';
+      return;
+    }
+    const fB = o.brecha / o.neto;
+    const falta = 'Te falta el ' + pct(fB, fB >= 0.01 ? 0 : 1) + ' de tu sueldo.';
+    const a = textoAporte(o, mod, k), m = ' (modalidad ' + mod + ')';
+    let txt;
+    if (!a) txt = falta + ' Con ' + esc(nombre(k)) + ' no se puede vivir de los intereses' + m + ': sin rendimiento positivo no genera intereses.';
+    else if (alcanzable(a.pct)) txt = falta + ' Para cubrirlo, tendrías que ahorrar ' + $(a.ars) + ' por mes con ' + esc(nombre(k)) + m + '.';
+    else txt = falta + ' Con ' + esc(nombre(k)) + m + ' el aporte supera tu sueldo: no es alcanzable.';
+    t.className = 'titular';
+    t.innerHTML = txt + chip;
+  }
+
+  // "Cuánto cubre la jubilación según el sueldo": una barra por persona de ejemplo y otra para "Vos"
+  // (el sueldo del campo), salvo que coincida con un ejemplo: en ese caso se resalta el ejemplo.
+  function renderCobertura(N) {
+    const filas = EJEMPLOS.map(e => ({ nombre: e.t, neto: e.neto, vos: N !== null && e.neto === N }));
+    if (N !== null && !filas.some(f => f.vos)) filas.push({ nombre: 'Vos', neto: N, vos: true, soloVos: true });
+    filas.sort((a, b) => a.neto - b.neto);
+    el('cob').innerHTML = filas.map(f => {
+      const s = M.sistema(M.brutoDesdeNeto(f.neto));
+      const fH = Math.min(1, s.haber_neto / s.neto), fB = s.brecha / s.neto, hay = s.brecha > 0;
+      const desc = f.nombre + ', sueldo neto ' + $(f.neto) + ': haber ' + pct(fH) + (hay ? ', brecha ' + pct(fB) + ' (' + $(s.brecha) + ' por mes)' : ', sin brecha') + '. Cargar este sueldo.';
+      // cada tramo guarda un texto largo y uno corto; si no entra ninguno, queda vacío
+      const tramoH = '<div class="haber" style="width:' + (fH * 100) + '%" data-largo="' + (hay ? 'Haber ' + pct(fH) : pct(fH) + ' · Sin brecha') + '" data-corto="' + (hay ? pct(fH) : 'Sin brecha') + '"></div>';
+      const tramoB = hay ? '<div class="brecha" style="width:' + (fB * 100) + '%" data-largo="Brecha ' + pct(fB) + '" data-corto="' + pct(fB) + '"></div>' : '';
+      return '<div class="cob-fila' + (f.vos ? ' vos' : '') + '" data-neto="' + f.neto + '" role="button" tabindex="0"' + (f.vos ? ' aria-current="true"' : '') + ' aria-label="' + esc(desc) + '">' +
+        '<div class="cob-nom num"><b>' + esc(f.nombre) + '</b> · ' + $(f.neto) + (f.vos && !f.soloVos ? '<span class="cob-vos">Vos</span>' : '') + '</div>' +
+        '<div class="nivel" aria-hidden="true">' + tramoH + tramoB + '</div>' +
+        '<div class="cob-monto num">' + (hay ? '<b>' + $(s.brecha) + '</b><small>de brecha por mes</small>' : '<b>Sin brecha</b>') + '</div></div>';
+    }).join('');
+    el('cob').querySelectorAll('.nivel > div').forEach(d => {
+      d.textContent = d.dataset.largo;
+      if (d.scrollWidth > d.clientWidth + 1) d.textContent = d.dataset.corto;
+      if (d.scrollWidth > d.clientWidth + 1) d.textContent = '';
+    });
+  }
+
   function renderRelato(o) {
     const mod = estado.mod, k = estado.instr, p = [];
     p.push('Con un sueldo neto de <b>' + $(o.neto) + '</b>, según el modelo cobrarías una jubilación de <b>' + $(o.haber_neto) + '</b> por mes (neto de aportes al PAMI).');
@@ -1137,84 +1230,67 @@ const PARAMETROS = {
       '<p class="nota">Son resultados de un modelo con supuestos (rendimientos constantes, sin volatilidad), no una predicción ni asesoramiento financiero.</p>';
   }
 
+  // Comparador: para cada instrumento, una barra por modalidad (B y A). La pista completa es el
+  // 100% del sueldo neto; si el aporte lo supera, la barra se llena, se corta y se indica "×n del neto".
   function renderComparador(o) {
-    const mod = estado.mod, hay = o.brecha > 0;
-    el('compTit').textContent = 'Aporte requerido por instrumento · Modalidad ' + mod;
-    el('compSub').textContent = hay ? 'Como % del sueldo neto, durante ' + num(ANIOS_AP) + ' años. Tocá una barra para elegir el instrumento. La hipótesis del trabajo se refiere a los perfiles moderado (MEGAQM) y agresivo (S&P 500), marcados con la franja azul.' : '';
+    const hay = o.brecha > 0;
+    el('compTit').textContent = 'Aporte requerido por instrumento · Modalidades B y A';
+    el('compSub').textContent = hay ? 'Como % del sueldo neto, durante ' + num(ANIOS_AP) + ' años. El ancho completo de cada barra es el 100% del sueldo neto. Tocá una barra para elegir el instrumento y la modalidad del detalle. La hipótesis del trabajo se refiere a los perfiles moderado (MEGAQM) y agresivo (S&P 500), marcados con la franja azul.' : '';
     el('compSinBrecha').classList.toggle('oculto', hay);
     const cont = el('barras');
-    if (!hay) { cont.innerHTML = ''; return; }
-    const vals = INSTR.map(k => valor(o, mod, k)).filter(v => v !== null);
-    const escala = Math.max(1, ...vals) * 1.04;
-    const best = mejorOpcion(o, mod);
-    const x100 = 100 / escala;
-    let h = '';
-    INSTR.forEach((k, i) => {
-      const a = textoAporte(o, mod, k);
-      h += '<div class="fila' + (k === estado.instr ? ' sel' : '') + (HIPOTESIS[k] ? ' hip' : '') + '" data-k="' + k + '" role="button" tabindex="0">';
-      h += '<div class="nom">' + esc(nombre(k)) + (estado.rSens !== null && k === estado.instr && financiero(k) ? ' <span class="chip-sens">sens.</span>' : '') +
-        '<small>' + esc(PERFIL[k]) + (HIPOTESIS[k] ? ' · hipótesis' : '') + '</small></div><div class="pista">';
-      if (i === 0) h += '<div class="ref100" style="left:' + x100 + '%"><span>100% del neto</span></div>';
-      else h += '<div class="ref100" style="left:' + x100 + '%"></div>';
-      if (!a) {
-        h += '<div class="na">N/A · sin intereses (rendimiento ≤ 0)</div></div><div class="val"></div></div>';
-        return;
-      }
-      const ok = alcanzable(a.pct);
-      h += '<div class="barra' + (k === best ? ' mejor' : '') + '" style="width:' + (a.pct * 100 / escala) + '%;background:var(' + (ok ? '--good' : '--serious') + ')" title="' +
-        esc(nombre(k) + ': ' + pct(a.pct, 2) + ' del neto · ' + $(a.ars) + ' por mes' + (ok ? '' : ' · no alcanzable')) + '"></div></div>';
-      h += '<div class="val num"><b>' + pct(a.pct) + '</b> ' + (ok ? '✓' : '✕') + '<small>' + $(a.ars) + '/mes</small></div></div>';
+    if (!hay) { cont.innerHTML = ''; el('inmDet').textContent = ''; return; }
+    const best = { B: mejorOpcion(o, 'B'), A: mejorOpcion(o, 'A') };
+    let h = '<div class="comp-eje" aria-hidden="true"><div></div><div class="ejeb"><span></span><span class="esc num"><span>0%</span><span>100% del neto</span></span><span></span></div></div>';
+    INSTR.forEach(k => {
+      const sensK = estado.rSens !== null && k === estado.instr && financiero(k);
+      h += '<div class="grupo' + (k === estado.instr ? ' sel' : '') + (HIPOTESIS[k] ? ' hip' : '') + '">';
+      h += '<div class="nom">' + esc(nombre(k)) + (sensK ? ' <span class="chip-sens">sens.</span>' : '') +
+        '<small>' + esc(PERFIL[k]) + (HIPOTESIS[k] ? ' · hipótesis' : '') + '</small></div>';
+      ['B', 'A'].forEach(m => {
+        const a = textoAporte(o, m, k), elegida = k === estado.instr && m === estado.mod;
+        const desc = nombre(k) + ', modalidad ' + m + ': ';
+        if (!a) {
+          h += '<div class="fila' + (elegida ? ' sel' : '') + '" data-k="' + k + '" data-m="' + m + '" role="button" tabindex="0" aria-pressed="' + elegida + '" aria-label="' + esc(desc + 'no aplica, sin intereses') + '">' +
+            '<span class="mlet">' + m + '</span><div class="pista"><div class="ref100"></div><div class="na">N/A · sin intereses (rendimiento ≤ 0)</div></div><div class="val"></div></div>';
+          return;
+        }
+        const ok = alcanzable(a.pct), sobre = a.pct > 1;
+        const resumen = sobre ? '×' + num(a.pct, 1) + ' del neto' : pct(a.pct);
+        h += '<div class="fila' + (elegida ? ' sel' : '') + '" data-k="' + k + '" data-m="' + m + '" role="button" tabindex="0" aria-pressed="' + elegida + '" aria-label="' +
+          esc(desc + pct(a.pct) + ' del neto, ' + $(a.ars) + ' por mes, ' + (ok ? 'alcanzable' : 'no alcanzable') + (k === best[m] ? ', mejor opción de la modalidad' : '')) + '">';
+        h += '<span class="mlet">' + m + '</span><div class="pista"><div class="ref100"></div>';
+        h += '<div class="barra mod' + m + (k === best[m] ? ' mejor' : '') + (sobre ? ' corte' : '') + '" style="width:' + (Math.min(a.pct, 1) * 100) + '%;background-color:var(' + (ok ? '--good' : '--serious') + ')" title="' +
+          esc(desc + pct(a.pct, 2) + ' del neto · ' + $(a.ars) + ' por mes' + (ok ? '' : ' · no alcanzable')) + '"></div></div>';
+        h += '<div class="val num"><b>' + resumen + '</b> ' + (ok ? '✓' : '✕') + '<small>' + (sobre ? pct(a.pct) + ' · ' : '') + $(a.ars) + '/mes</small></div></div>';
+      });
+      h += '</div>';
     });
     cont.innerHTML = h;
+    // detalle del Inmobiliario en las dos modalidades
+    const uni = n => n + ' ' + (n === 1 ? 'unidad' : 'unidades');
+    el('inmDet').textContent = 'Inmobiliario · B: ' + usd(o.B._inm_usd, 2) + ' por mes, ' + uni(o.B._deptos) + ' al jubilarte' +
+      ' · A: ' + usd(o.A._inm_usd, 2) + ' por mes, ' + uni(o.A._deptos) + (o.A._deptos === 1 ? ' necesaria' : ' necesarias') + '.';
   }
 
-  function renderTabla(o) {
-    if (o.brecha <= 0) { el('tabla').innerHTML = '<p>No hay brecha: no se calculan aportes.</p>'; return; }
-    let h = '<table><thead><tr><th>Instrumento</th><th>Rend. real anual</th><th>Mod. B · % neto</th><th>Mod. B · $/mes</th><th>Mod. A · % neto</th><th>Mod. A · $/mes</th></tr></thead><tbody>';
-    INSTR.forEach(k => {
-      const r = (estado.rSens !== null && k === estado.instr && financiero(k)) ? estado.rSens : R[k];
-      h += '<tr><td>' + esc(nombre(k)) + ' <small style="color:var(--muted)">' + esc(PERFIL[k]) + '</small></td><td>' + (r === undefined ? 'simulación' : pct(r, 2) + (r !== R[k] ? ' (sens.)' : '')) + '</td>';
-      ['B', 'A'].forEach(m => {
-        const a = textoAporte(o, m, k);
-        if (!a) h += '<td>N/A</td><td>—</td>';
-        else h += '<td>' + pct(a.pct, 2) + (alcanzable(a.pct) ? '' : ' ✕') + '</td><td>' + $(a.ars) + '</td>';
-      });
-      h += '</tr>';
-    });
-    h += '</tbody></table><p class="ayuda">✕ = no alcanzable (aporte ≥ 100% del neto). Inmobiliario: ' +
-      'B ' + usd(o.B._inm_usd, 2) + '/mes (' + o.B._deptos + ' u. al jubilarte), A ' + usd(o.A._inm_usd, 2) + '/mes (' + o.A._deptos + ' u. necesarias).</p>';
-    el('tabla').innerHTML = h;
-  }
-
-  // ---------- gráfico de brecha (solo usa sistema(), que es instantáneo) ----------
-  // Los gráficos se dibujan al ancho real del contenedor (1 unidad SVG = 1 px), así el texto
-  // conserva su tamaño en el celular; se redibujan al cambiar el ancho de la pantalla.
+  // ---------- utilidades de gráficos ----------
+  // El gráfico se dibuja al ancho real del contenedor (1 unidad SVG = 1 px), así el texto
+  // conserva su tamaño en el celular; se redibuja al cambiar el ancho de la pantalla.
   function medir(cont, svg, hAncho, hAngosto) {
     const w = Math.round(cont.clientWidth) || 720, h = w < 560 ? hAngosto : hAncho;
     svg.setAttribute('viewBox', '0 0 ' + w + ' ' + h);
     return [w, h];
   }
-  let W = 720, H = 260;
-  const ml = 46, mr = 16, mt = 14, mb = 34;
-  // Después de dibujar: corre las etiquetas que se salen del dibujo y, si dos se pisan,
-  // oculta la de menor prioridad (marcas del eje) o mueve la etiqueta móvil (data-mover).
+  // Después de dibujar: corre las etiquetas que se salen del dibujo y oculta las marcas del eje
+  // (data-marca) que se pisan con la anterior.
   function acomodarEtiquetas(svg, ancho) {
     const ts = [...svg.querySelectorAll('text')];
     if (!ts.length || !ts[0].getBBox) return;
     const caja = t => { try { return t.getBBox(); } catch (e) { return null; } };
     ts.forEach(t => {
       const b = caja(t); if (!b || !b.width) return;
-      // una etiqueta con data-giro que no entra a la derecha de su línea pasa a la izquierda
-      if (t.dataset.giro && b.x + b.width > ancho - 1) { t.setAttribute('text-anchor', 'end'); t.setAttribute('x', t.dataset.giro); return; }
       let dx = 0;
       if (b.x < 1) dx = 1 - b.x; else if (b.x + b.width > ancho - 1) dx = ancho - 1 - b.x - b.width;
       if (dx) t.setAttribute('x', +t.getAttribute('x') + dx);
-    });
-    const pisa = (a, b) => a.x < b.x + b.width + 4 && b.x < a.x + a.width + 4 && a.y < b.y + b.height && b.y < a.y + a.height;
-    ts.forEach(t => {
-      if (!t.dataset.mover) return;
-      const otras = ts.filter(o => o !== t && o.style.display !== 'none').map(caja).filter(Boolean);
-      if (otras.some(o => pisa(caja(t), o))) t.setAttribute('y', +t.getAttribute('y') + 26);
     });
     const marcas = ts.filter(t => t.dataset.marca).sort((a, b) => caja(a).x - caja(b).x);
     let ultima = null;
@@ -1223,69 +1299,6 @@ const PARAMETROS = {
       if (ultima && b.x < ultima.x + ultima.width + 6) t.style.display = 'none'; else ultima = b;
     });
   }
-  const lx = Math.log(NETO_MIN), lX = Math.log(NETO_MAX);
-  const sx = n => ml + (Math.log(n) - lx) / (lX - lx) * (W - ml - mr);
-  const sy = f => mt + (1 - f) * (H - mt - mb);
-  const curva = [];
-  for (let i = 0; i <= 240; i++) {
-    const n = Math.exp(lx + (lX - lx) * i / 240), s = M.sistema(M.brutoDesdeNeto(n));
-    curva.push({ n: n, f: s.brecha / s.neto, b: s.brecha });
-  }
-  function dibujarGrafico(N) {
-    const svg = el('svg');
-    [W, H] = medir(el('graf'), svg, 260, 230);
-    const angosto = W < 480;
-    let g = '';
-    [0, 0.25, 0.5, 0.75, 1].forEach(f => {
-      g += '<line x1="' + ml + '" x2="' + (W - mr) + '" y1="' + sy(f) + '" y2="' + sy(f) + '" stroke="var(--grid)" stroke-width="1"/>';
-      g += '<text x="' + (ml - 6) + '" y="' + (sy(f) + 4) + '" text-anchor="end">' + num(f * 100) + '%</text>';
-    });
-    (angosto ? [1e6, 5e6, 2e7] : [5e5, 1e6, 2e6, 5e6, 1e7, 2e7]).forEach(n => {
-      if (n < NETO_MIN || n > NETO_MAX) return;
-      g += '<line x1="' + sx(n) + '" x2="' + sx(n) + '" y1="' + sy(0) + '" y2="' + (sy(0) + 4) + '" stroke="var(--muted)"/>';
-      g += '<text data-marca="1" x="' + sx(n) + '" y="' + (sy(0) + 17) + '" text-anchor="middle">$' + (n >= 1e6 ? num(n / 1e6) + ' M' : num(n / 1e3) + ' mil') + '</text>';
-    });
-    // referencia: neto en el tope de la base imponible
-    const xt = sx(NETO_TOPE);
-    g += '<line x1="' + xt + '" x2="' + xt + '" y1="' + mt + '" y2="' + sy(0) + '" stroke="var(--muted)" stroke-dasharray="3 3"/>';
-    g += '<text data-giro="' + (xt - 5) + '" x="' + (xt + 5) + '" y="' + (mt + 10) + '">' + (angosto ? 'tope imponible' : 'tope base imponible (neto ' + $(NETO_TOPE) + ')') + '</text>';
-    g += '<line x1="' + ml + '" x2="' + (W - mr) + '" y1="' + sy(0) + '" y2="' + sy(0) + '" stroke="var(--muted)"/>';
-    const d = curva.map((p, i) => (i ? 'L' : 'M') + sx(p.n).toFixed(1) + ' ' + sy(p.f).toFixed(1)).join(' ');
-    g += '<path d="' + d + '" fill="none" stroke="var(--accent)" stroke-width="2" stroke-linejoin="round"/>';
-    if (N !== null) {
-      const s = M.sistema(M.brutoDesdeNeto(N)), f = s.brecha / s.neto;
-      g += '<line x1="' + sx(N) + '" x2="' + sx(N) + '" y1="' + sy(f) + '" y2="' + sy(0) + '" stroke="var(--accent)" stroke-width="1" opacity=".5"/>';
-      g += '<circle cx="' + sx(N) + '" cy="' + sy(f) + '" r="5" fill="var(--accent)" stroke="var(--surface)" stroke-width="2"/>';
-      // la curva crece hacia la derecha: la etiqueta va arriba a la izquierda del punto (salvo en el borde izquierdo)
-      const ta = sx(N) < ml + 90 ? 'start' : 'end', dx = ta === 'end' ? -9 : 9;
-      g += '<text data-mover="1" x="' + (sx(N) + dx) + '" y="' + (sy(f) - 9) + '" text-anchor="' + ta + '" style="fill:var(--text);font-weight:600">Vos: ' + pct(f) + '</text>';
-    }
-    g += '<g id="hover"></g><rect x="' + ml + '" y="' + mt + '" width="' + (W - ml - mr) + '" height="' + (H - mt - mb) + '" fill="transparent" id="zona"/>';
-    svg.innerHTML = g;
-    acomodarEtiquetas(svg, W);
-  }
-  (function hover() {
-    const graf = el('graf'), tip = el('tip'), svg = el('svg');
-    const mover = e => {
-      if (e.target.id !== 'zona') return;
-      const r = svg.getBoundingClientRect(), k = W / r.width;
-      const x = (e.clientX - r.left) * k;
-      const n = Math.exp(lx + (x - ml) / (W - ml - mr) * (lX - lx));
-      if (n < NETO_MIN || n > NETO_MAX) return;
-      const s = M.sistema(M.brutoDesdeNeto(n)), f = s.brecha / s.neto;
-      el('hover').innerHTML = '<line x1="' + x + '" x2="' + x + '" y1="' + mt + '" y2="' + sy(0) + '" stroke="var(--muted)" stroke-width="1"/>' +
-        '<circle cx="' + x + '" cy="' + sy(f) + '" r="4" fill="var(--accent)" stroke="var(--surface)" stroke-width="2"/>';
-      tip.innerHTML = '<b>Neto ' + $(n) + '</b>Haber neto ' + $(s.haber_neto) + '<br>Brecha ' + $(s.brecha) + ' · ' + pct(f);
-      tip.style.display = 'block';
-      const px = (e.clientX - graf.getBoundingClientRect().left);
-      tip.style.left = Math.min(px + 12, graf.clientWidth - tip.offsetWidth - 4) + 'px';
-      tip.style.top = (sy(f) / k - 10) + 'px';
-    };
-    svg.addEventListener('pointermove', mover);
-    svg.addEventListener('pointerdown', mover);
-    // con el dedo, la ayuda queda visible hasta el próximo toque
-    svg.addEventListener('pointerleave', e => { if (e.pointerType === 'touch') return; tip.style.display = 'none'; const h = el('hover'); if (h) h.innerHTML = ''; });
-  })();
 
   // ---------- evolución del fondo (instrumento elegido) ----------
   let FW = 720, FH = 280;
@@ -1301,11 +1314,12 @@ const PARAMETROS = {
     const mod = estado.mod, k = estado.instr, svg = el('svgFondo'), msg = el('fondoMsg');
     el('fondoTit').textContent = 'Evolución del fondo · ' + nombre(k) + ' · Modalidad ' + mod;
     fondoActual = null;
-    let serie = null, pasos = null, sub = '', nota = '';
+    let serie = null, pasos = null, sub = '', nota = '', apMes = 0;
     if (o.brecha > 0) {
       if (k === 'Inmobiliario') {
         const t = M.trayectoriaInmob(N, mod);
         pasos = t.pasos; serie = pasos.map(q => q.patrimonio * MEP);
+        apMes = o[mod]._inm_usd * MEP;   // el aporte en USD de la tarjeta, pasado a pesos al MEP
         sub = 'Patrimonio (efectivo + unidades × precio de ese mes), en pesos de hoy al MEP. Aporte de ' + usd(o[mod]._inm_usd, 2) + ' por mes durante ' + num(ANIOS_AP) + ' años; ' +
           t.unidades_fin_acum + ' ' + (t.unidades_fin_acum === 1 ? 'unidad' : 'unidades') + ' al jubilarte.';
         nota = mod === 'B'
@@ -1314,7 +1328,7 @@ const PARAMETROS = {
       } else {
         const r = rElegido(), t = M.trayectoriaFondo(N, r, mod);
         if (t) {
-          serie = t.saldo;
+          serie = t.saldo; apMes = t.ap;
           sub = 'Saldo en pesos de hoy con un rendimiento real de ' + pct(r, 2) + ' anual' + (estado.rSens !== null ? ' (sensibilidad)' : '') + '. Aporte de ' + $(t.ap) + ' por mes durante ' + num(ANIOS_AP) + ' años; al jubilarte el fondo tiene ' + $(t.S0) + '.';
           nota = mod === 'B'
             ? 'Retiro: se sacan ' + $(t.brecha) + ' por mes (la brecha) y el fondo llega a cero a los ' + num(J.anios_retiro, 1) + ' años.'
@@ -1326,14 +1340,19 @@ const PARAMETROS = {
       msg.querySelector('p').textContent = o.brecha > 0
         ? 'En la modalidad A el fondo vive de los intereses: con un rendimiento real ≤ 0 no hay intereses, así que no hay gráfico. Probá la modalidad B.'
         : 'No hay brecha: no hace falta armar un fondo.';
-      msg.classList.remove('oculto'); el('grafFondo').classList.add('oculto');
-      el('fondoSub').textContent = ''; el('fondoNota').textContent = '';
+      msg.classList.remove('oculto'); el('grafFondo').classList.add('oculto'); el('fondoLey').classList.add('oculto');
+      el('fondoSub').textContent = ''; el('fondoNota').textContent = ''; el('fondoTotal').textContent = '';
       return;
     }
-    msg.classList.add('oculto'); el('grafFondo').classList.remove('oculto');
+    msg.classList.add('oculto'); el('grafFondo').classList.remove('oculto'); el('fondoLey').classList.remove('oculto');
+    // total aportado hasta cada mes: aporte mensual × meses, plano desde la jubilación
+    const MA = J.meses_acumulacion, aportes = serie.map((_, m) => apMes * Math.min(m, MA));
+    const totalAp = apMes * MA, fondoJub = serie[MA];
+    el('fondoLeySaldo').textContent = k === 'Inmobiliario' ? 'Patrimonio (efectivo + unidades)' : 'Saldo del fondo';
+    el('fondoTotal').innerHTML = 'Aportaste <b>' + $(totalAp) + '</b> en total; tu fondo llega a <b>' + $(fondoJub) + '</b> al jubilarte (<b>' + num(fondoJub / totalAp, 1) + ' veces</b> lo aportado).';
     [FW, FH] = medir(el('grafFondo'), svg, 280, 240);
     el('fondoSub').textContent = sub; el('fondoNota').textContent = nota;
-    const n = serie.length - 1, vmax = Math.max(...serie), paso = pasoLindo(vmax || 1), ymax = Math.ceil((vmax || 1) / paso) * paso;
+    const n = serie.length - 1, vmax = Math.max(...serie, totalAp), paso = pasoLindo(vmax || 1), ymax = Math.ceil((vmax || 1) / paso) * paso;
     // margen izquierdo = ancho de la etiqueta más larga del eje vertical (medida con la letra real)
     svg.innerHTML = '<text id="medida">' + millones(ymax) + '</text>';
     const bm = svg.querySelector('#medida').getBBox ? svg.querySelector('#medida').getBBox() : null;
@@ -1353,11 +1372,12 @@ const PARAMETROS = {
     const d = serie.map((v, m) => (m ? 'L' : 'M') + x(m).toFixed(1) + ' ' + y(v).toFixed(1)).join(' ');
     g += '<path d="' + d + ' L' + x(n) + ' ' + y(0) + ' L' + x(0) + ' ' + y(0) + 'Z" fill="var(--accent)" opacity=".12"/>';
     g += '<path d="' + d + '" fill="none" stroke="var(--accent)" stroke-width="2" stroke-linejoin="round"/>';
+    g += '<path d="M' + x(0) + ' ' + y(0) + ' L' + x(MA) + ' ' + y(totalAp) + ' L' + x(n) + ' ' + y(totalAp) + '" fill="none" stroke="var(--text-2)" stroke-width="1.5" stroke-dasharray="5 4"/>';
     g += '<line x1="' + fml + '" x2="' + (FW - fmr) + '" y1="' + y(0) + '" y2="' + y(0) + '" stroke="var(--muted)"/>';
     g += '<g id="hoverFondo"></g><rect x="' + fml + '" y="' + fmt + '" width="' + (FW - fml - fmr) + '" height="' + (FH - fmt - fmb) + '" fill="transparent" id="zonaFondo"/>';
     svg.innerHTML = g;
     acomodarEtiquetas(svg, FW);
-    fondoActual = { serie, pasos, x, y, n };
+    fondoActual = { serie, pasos, aportes, x, y, n };
   }
   (function hoverFondo() {
     const graf = el('grafFondo'), tip = el('tipFondo'), svg = el('svgFondo');
@@ -1369,6 +1389,7 @@ const PARAMETROS = {
       el('hoverFondo').innerHTML = '<line x1="' + f.x(m) + '" x2="' + f.x(m) + '" y1="' + fmt + '" y2="' + f.y(0) + '" stroke="var(--muted)"/>' +
         '<circle cx="' + f.x(m) + '" cy="' + f.y(v) + '" r="4" fill="var(--accent)" stroke="var(--surface)" stroke-width="2"/>';
       let t = '<b>Año ' + num(m / 12, 1) + ' (mes ' + m + ')</b>' + (m <= J.meses_acumulacion ? 'Acumulación' : 'Retiro') + ' · ' + $(v);
+      t += '<br>Aportado hasta acá ' + $(f.aportes[m]);
       if (f.pasos) t += '<br>' + f.pasos[m].u + ' u. + efectivo ' + $(f.pasos[m].cash * MEP);
       tip.innerHTML = t; tip.style.display = 'block';
       const px = e.clientX - graf.getBoundingClientRect().left;
@@ -1379,6 +1400,9 @@ const PARAMETROS = {
     svg.addEventListener('pointerdown', mover);
     svg.addEventListener('pointerleave', e => { if (e.pointerType === 'touch') return; tip.style.display = 'none'; const h = el('hoverFondo'); if (h) h.innerHTML = ''; });
   })();
+
+  el('cobNota').textContent = 'Cuanto más ganás, menos de tu sueldo cubre la jubilación. Por encima del tope de la base imponible (sueldo neto de alrededor de $' +
+    num(NETO_TOPE / 1e6, 1) + ' millones; exactamente ' + $(NETO_TOPE) + ') lo que ganás de más ya no suma a la jubilación.';
 
   // ---------- pie: supuestos y parámetros ----------
   const I = J.inmobiliario;
@@ -1400,28 +1424,65 @@ const PARAMETROS = {
   ].map(r => '<div><span>' + esc(r[0]) + '</span><span>' + esc(r[1]) + '</span></div>').join('');
 
   // ---------- eventos ----------
-  function desdeInput() { estado.neto = parsear(inp.value); if (estado.neto >= MIN_R && estado.neto <= MAX_R) desliz.value = aDesliz(estado.neto); render(); }
+  function desdeInput() { estado.neto = parsear(inp.value); render(); }
   inp.addEventListener('input', desdeInput);
   inp.addEventListener('blur', () => { if (!isNaN(estado.neto)) inp.value = num(estado.neto, estado.neto % 1 ? 2 : 0); });
-  desliz.addEventListener('input', () => { estado.neto = desdeDesliz(desliz.value); inp.value = num(estado.neto); render(); });
   document.querySelectorAll('input[name=mod]').forEach(r => r.addEventListener('change', () => { estado.mod = r.value; render(); }));
   sel.addEventListener('change', () => { estado.instr = sel.value; estado.rSens = null; render(); });
   el('ejemplos').addEventListener('click', e => {
     const b = e.target.closest('button'); if (!b) return;
-    estado.neto = EJEMPLOS[+b.dataset.i].neto; inp.value = num(estado.neto); desliz.value = aDesliz(estado.neto); render();
+    estado.neto = EJEMPLOS[+b.dataset.i].neto; inp.value = num(estado.neto); render();
   });
   rend.addEventListener('input', () => { estado.rSens = parseFloat(rend.value); render(); });
   el('rendBase').addEventListener('click', () => { estado.rSens = null; rend.value = R[estado.instr]; render(); });
-  function elegir(t) { const f = t.closest('.fila'); if (f) { if (f.dataset.k !== estado.instr) estado.rSens = null; estado.instr = f.dataset.k; sel.value = f.dataset.k; render(); } }
+  function elegir(t) {
+    const f = t.closest('.fila'); if (!f) return;
+    if (f.dataset.k !== estado.instr) estado.rSens = null;
+    estado.instr = f.dataset.k; sel.value = f.dataset.k;
+    estado.mod = f.dataset.m; document.querySelector('input[name=mod][value=' + f.dataset.m + ']').checked = true;
+    render();
+    // el comparador se vuelve a dibujar: el foco del teclado vuelve a la barra elegida
+    const nueva = el('barras').querySelector('.fila[data-k="' + estado.instr + '"][data-m="' + estado.mod + '"]');
+    if (nueva) nueva.focus({ preventScroll: true });
+  }
   el('barras').addEventListener('click', e => elegir(e.target));
+  // tocar una barra de "Cuánto cubre la jubilación" carga ese sueldo (como los botones de ejemplo)
+  function cargarSueldoDeBarra(t) {
+    const f = t.closest('.cob-fila'); if (!f) return;
+    estado.neto = +f.dataset.neto; inp.value = num(estado.neto, estado.neto % 1 ? 2 : 0);
+    render();
+    const nueva = el('cob').querySelector('.cob-fila[data-neto="' + f.dataset.neto + '"]');
+    if (nueva) nueva.focus({ preventScroll: true });
+  }
+  el('cob').addEventListener('click', e => cargarSueldoDeBarra(e.target));
+  el('cob').addEventListener('keydown', e => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); cargarSueldoDeBarra(e.target); } });
   el('barras').addEventListener('keydown', e => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); elegir(e.target); } });
 
   sel.value = estado.instr;
+  el('leyAnios').textContent = num(J.anios_retiro, 1);
+  // "Evolución del fondo": abierta en pantallas de 600 px o más, plegada en el celular.
+  // Mientras la persona no toque ningún plegable, la regla se vuelve a aplicar si cambia el ancho.
+  let plegablesTocados = false;
+  const aplicarPlegadoPorAncho = () => {
+    const ancha = window.matchMedia('(min-width: 600px)').matches;
+    document.querySelectorAll('details[data-abrir-ancho]').forEach(d => { d.open = ancha; });
+  };
+  aplicarPlegadoPorAncho();
+  document.querySelectorAll('details.plegable > summary').forEach(sm => sm.addEventListener('click', () => { plegablesTocados = true; }));
+  // el gráfico plegado tiene ancho 0: se vuelve a dibujar (y a medir) al abrirlo
+  el('detFondo').addEventListener('toggle', () => { if (el('detFondo').open) render(); });
+  let plegadosAntesDeImprimir = [];
+  window.addEventListener('beforeprint', () => {
+    plegadosAntesDeImprimir = [...document.querySelectorAll('details.plegable:not([open])')];
+    plegadosAntesDeImprimir.forEach(d => { d.open = true; });
+    render();
+  });
+  window.addEventListener('afterprint', () => { plegadosAntesDeImprimir.forEach(d => { d.open = false; }); plegadosAntesDeImprimir = []; });
   let anchoPrevio = window.innerWidth, pendiente = false;
   window.addEventListener('resize', () => {
     if (window.innerWidth === anchoPrevio || pendiente) return;   // el alto cambia al mostrar/ocultar la barra del navegador
     pendiente = true;
-    requestAnimationFrame(() => { pendiente = false; anchoPrevio = window.innerWidth; render(); });
+    requestAnimationFrame(() => { pendiente = false; anchoPrevio = window.innerWidth; if (!plegablesTocados) aplicarPlegadoPorAncho(); render(); });
   });
   el('resumen').addEventListener('click', () => {
     el('secEntradas').scrollIntoView({ behavior: matchMedia('(prefers-reduced-motion: reduce)').matches ? 'auto' : 'smooth' });
