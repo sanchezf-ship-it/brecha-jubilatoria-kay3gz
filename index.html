@@ -89,7 +89,7 @@ select { width: 100%; font: inherit; font-size: 15px; padding: 9px 10px; border:
 .leyenda { display: flex; gap: 14px; font-size: 12.5px; color: var(--text-2); flex-wrap: wrap; }
 .leyenda span { display: inline-flex; align-items: center; gap: 5px; }
 .leyenda i { width: 10px; height: 10px; border-radius: 2px; display: inline-block; }
-.leyenda .mejor { width: 12px; height: 12px; border: 2px solid var(--text); background: transparent; }
+.ins-mejor { display: inline-block; margin-left: 4px; padding: 0 6px; font-size: 12px; font-weight: 700; line-height: 1.5; white-space: nowrap; color: var(--text); background: color-mix(in srgb, var(--good) 18%, var(--surface)); border: 1px solid var(--good); border-radius: 999px; vertical-align: 1px; }
 /* Cada instrumento es un grupo con dos barras: B (consumir el capital) y A (vivir de los intereses).
    La pista completa es el 100% del sueldo neto; lo que pasa del 100% se dibuja lleno y con corte. */
 .barras { position: relative; margin-top: 10px; }
@@ -106,10 +106,9 @@ select { width: 100%; font: inherit; font-size: 15px; padding: 9px 10px; border:
 .ejeb { font-size: 12px; color: var(--muted); padding-bottom: 2px; }
 .ejeb .esc { display: flex; justify-content: space-between; }
 .pista { position: relative; height: 24px; }
-.barra { position: absolute; left: 0; top: 4px; height: 16px; border-radius: 0 4px 4px 0; min-width: 3px; }
+.barra { position: absolute; left: 0; top: 4px; height: 16px; border-radius: 0 4px 4px 0; min-width: 6px; }  /* ancho visual mínimo: el % va escrito al lado */
 .barra.modA { background-image: repeating-linear-gradient(135deg, rgba(255,255,255,.42) 0 3px, transparent 3px 7px); }
 .barra.corte { border-radius: 0; clip-path: polygon(0 0, calc(100% - 10px) 0, 100% 25%, calc(100% - 10px) 50%, 100% 75%, calc(100% - 10px) 100%, 0 100%); }
-.barra.mejor { outline: 2px solid var(--text); outline-offset: 2px; }
 .ref100 { position: absolute; left: 100%; top: -3px; bottom: -3px; width: 0; border-left: 1.5px dashed var(--muted); pointer-events: none; }
 .fila .val { font-size: 13.5px; min-width: 0; }
 .fila .val b { font-size: 14.5px; }
@@ -235,7 +234,7 @@ footer .param div { display: flex; justify-content: space-between; border-bottom
   .aviso, .t, .ayuda, .error, .seg label, .seg small, .tarjeta .et, .tarjeta .d, .estado, .relato .nota, .leyenda,
   .fila .val, .fila .val small, .grupo .nom small, .titular .chip-sens, .na, .nota-inm, details, th, td, .tip, .cob-vos, .cob-monto small,
   footer, .ejemplos button, .ejemplos small, .sens-fila button, .aviso-sens, .chip-sens, .nivel div,
-  .nivel-ley, .resumen, .resumen span, .v small, small, .mlet, .ejeb, .inm-det, details.plegable > summary { font-size: 14px; }
+  .nivel-ley, .resumen, .resumen span, .v small, small, .ins-mejor, .mlet, .ejeb, .inm-det, details.plegable > summary { font-size: 14px; }
   .titular { font-size: 20px; padding: 14px; }
   #grafFondo text { font-size: 14px; }
 
@@ -404,7 +403,7 @@ footer .param div { display: flex; justify-content: space-between; border-bottom
           <span><i style="background:var(--good)"></i>✓ Alcanzable</span>
           <span><i style="background:var(--serious)"></i>✕ No alcanzable (≥ 100% del neto)</span>
           <span><i class="corte-ley"></i>Supera el 100% del neto (barra cortada)</span>
-          <span><i class="mejor"></i>Mejor opción de cada modalidad</span>
+          <span><span class="ins-mejor" aria-hidden="true">★ Mejor</span>Mejor opción de cada modalidad</span>
           <span><i class="ref-ley"></i>100% del neto</span>
           <span><i class="hipm"></i>Perfiles de la hipótesis (moderado y agresivo)</span>
         </div>
@@ -428,6 +427,7 @@ footer .param div { display: flex; justify-content: space-between; border-bottom
           <div class="tip" id="tipFondo"></div>
         </div>
         <p class="fondo-total num" id="fondoTotal"></p>
+        <p class="ayuda oculto" id="fondoBajoAporte" style="margin:0 0 6px"></p>
         <div class="ayuda" id="fondoNota"></div>
       </details>
     </section>
@@ -1176,7 +1176,7 @@ const PARAMETROS = {
       const fH = Math.min(1, s.haber_neto / s.neto), fB = s.brecha / s.neto, hay = s.brecha > 0;
       const desc = f.nombre + ', sueldo neto ' + $(f.neto) + ': haber ' + pct(fH) + (hay ? ', brecha ' + pct(fB) + ' (' + $(s.brecha) + ' por mes)' : ', sin brecha') + '. Cargar este sueldo.';
       // cada tramo guarda un texto largo y uno corto; si no entra ninguno, queda vacío
-      const tramoH = '<div class="haber" style="width:' + (fH * 100) + '%" data-largo="' + (hay ? 'Haber ' + pct(fH) : pct(fH) + ' · Sin brecha') + '" data-corto="' + (hay ? pct(fH) : 'Sin brecha') + '"></div>';
+      const tramoH = '<div class="haber" style="width:' + (fH * 100) + '%" data-largo="' + (hay ? 'Haber ' + pct(fH) : 'Haber ' + pct(fH, 0)) + '" data-corto="' + (hay ? pct(fH) : pct(fH, 0)) + '"></div>';
       const tramoB = hay ? '<div class="brecha" style="width:' + (fB * 100) + '%" data-largo="Brecha ' + pct(fB) + '" data-corto="' + pct(fB) + '"></div>' : '';
       return '<div class="cob-fila' + (f.vos ? ' vos' : '') + '" data-neto="' + f.neto + '" role="button" tabindex="0"' + (f.vos ? ' aria-current="true"' : '') + ' aria-label="' + esc(desc) + '">' +
         '<div class="cob-nom num"><b>' + esc(f.nombre) + '</b> · ' + $(f.neto) + (f.vos && !f.soloVos ? '<span class="cob-vos">Vos</span>' : '') + '</div>' +
@@ -1259,9 +1259,9 @@ const PARAMETROS = {
         h += '<div class="fila' + (elegida ? ' sel' : '') + '" data-k="' + k + '" data-m="' + m + '" role="button" tabindex="0" aria-pressed="' + elegida + '" aria-label="' +
           esc(desc + pct(a.pct) + ' del neto, ' + $(a.ars) + ' por mes, ' + (ok ? 'alcanzable' : 'no alcanzable') + (k === best[m] ? ', mejor opción de la modalidad' : '')) + '">';
         h += '<span class="mlet">' + m + '</span><div class="pista"><div class="ref100"></div>';
-        h += '<div class="barra mod' + m + (k === best[m] ? ' mejor' : '') + (sobre ? ' corte' : '') + '" style="width:' + (Math.min(a.pct, 1) * 100) + '%;background-color:var(' + (ok ? '--good' : '--serious') + ')" title="' +
+        h += '<div class="barra mod' + m + (sobre ? ' corte' : '') + '" style="width:' + (Math.min(a.pct, 1) * 100) + '%;background-color:var(' + (ok ? '--good' : '--serious') + ')" title="' +
           esc(desc + pct(a.pct, 2) + ' del neto · ' + $(a.ars) + ' por mes' + (ok ? '' : ' · no alcanzable')) + '"></div></div>';
-        h += '<div class="val num"><b>' + resumen + '</b> ' + (ok ? '✓' : '✕') + '<small>' + (sobre ? pct(a.pct) + ' · ' : '') + $(a.ars) + '/mes</small></div></div>';
+        h += '<div class="val num"><b>' + resumen + '</b> ' + (ok ? '✓' : '✕') + (k === best[m] ? '<span class="ins-mejor" aria-hidden="true">★ Mejor</span>' : '') + '<small>' + (sobre ? pct(a.pct) + ' · ' : '') + $(a.ars) + '/mes</small></div></div>';
       });
       h += '</div>';
     });
@@ -1342,6 +1342,7 @@ const PARAMETROS = {
         : 'No hay brecha: no hace falta armar un fondo.';
       msg.classList.remove('oculto'); el('grafFondo').classList.add('oculto'); el('fondoLey').classList.add('oculto');
       el('fondoSub').textContent = ''; el('fondoNota').textContent = ''; el('fondoTotal').textContent = '';
+      el('fondoBajoAporte').classList.add('oculto');
       return;
     }
     msg.classList.add('oculto'); el('grafFondo').classList.remove('oculto'); el('fondoLey').classList.remove('oculto');
@@ -1349,7 +1350,18 @@ const PARAMETROS = {
     const MA = J.meses_acumulacion, aportes = serie.map((_, m) => apMes * Math.min(m, MA));
     const totalAp = apMes * MA, fondoJub = serie[MA];
     el('fondoLeySaldo').textContent = k === 'Inmobiliario' ? 'Patrimonio (efectivo + unidades)' : 'Saldo del fondo';
-    el('fondoTotal').innerHTML = 'Aportaste <b>' + $(totalAp) + '</b> en total; tu fondo llega a <b>' + $(fondoJub) + '</b> al jubilarte (<b>' + num(fondoJub / totalAp, 1) + ' veces</b> lo aportado).';
+    const veces = fondoJub / totalAp;
+    // con un decimal, 0,96 se vería "1,0": si queda por debajo de lo aportado se muestran dos
+    const vecesTxt = veces < 1 && num(veces, 1) === '1,0' ? num(veces, 2) : num(veces, 1);
+    el('fondoTotal').innerHTML = 'Aportaste <b>' + $(totalAp) + '</b> en total; tu fondo llega a <b>' + $(fondoJub) + '</b> al jubilarte (<b>' + vecesTxt + ' veces</b> lo aportado).';
+    const bajo = el('fondoBajoAporte');
+    bajo.classList.toggle('oculto', !(veces < 1));
+    if (veces < 1) {
+      const Iv = J.inmobiliario, perdidaEfectivo = -(Math.pow(1 + Iv.decaimiento_mensual_efectivo, 12) - 1);
+      bajo.textContent = k === 'Inmobiliario'
+        ? 'El patrimonio queda por debajo de lo aportado porque, en el modelo, el efectivo pierde poder adquisitivo (inflación de EE.UU. de ' + pct(perdidaEfectivo) + ' anual) y el precio del m² baja ' + pct(-Iv.apreciacion_real_anual) + ' real por año.'
+        : 'Con este rendimiento el fondo queda por debajo de lo aportado.';
+    }
     [FW, FH] = medir(el('grafFondo'), svg, 280, 240);
     el('fondoSub').textContent = sub; el('fondoNota').textContent = nota;
     const n = serie.length - 1, vmax = Math.max(...serie, totalAp), paso = pasoLindo(vmax || 1), ymax = Math.ceil((vmax || 1) / paso) * paso;
