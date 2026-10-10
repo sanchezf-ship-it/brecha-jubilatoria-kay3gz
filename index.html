@@ -1,0 +1,1438 @@
+<!doctype html>
+<html lang="es-AR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="robots" content="noindex">
+<title>Brecha jubilatoria</title>
+<style>
+:root {
+  --bg: #f4f3ef;
+  --surface: #fcfcfb;
+  --border: #e2e0d8;
+  --text: #0b0b0b;
+  --text-2: #52514e;
+  --muted: #7a7973;
+  --accent: #2a78d6;
+  --good: #0ca30c;
+  --serious: #ec835a;
+  --na: #c9c7bf;
+  --grid: #ebe9e2;
+  --warn-bg: #fdf1e9;
+  --brecha: #d95926;
+}
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    --bg: #111110; --surface: #1a1a19; --border: #33322f; --text: #ffffff;
+    --text-2: #c3c2b7; --muted: #8f8e86; --accent: #3987e5; --na: #4a4944;
+    --grid: #2a2a28; --warn-bg: #2e2018; --brecha: #d95926;
+    color-scheme: dark;
+  }
+}
+:root[data-theme="dark"] {
+  --bg: #111110; --surface: #1a1a19; --border: #33322f; --text: #ffffff;
+  --text-2: #c3c2b7; --muted: #8f8e86; --accent: #3987e5; --na: #4a4944;
+  --grid: #2a2a28; --warn-bg: #2e2018; --brecha: #d95926;
+  color-scheme: dark;
+}
+* { box-sizing: border-box; }
+body {
+  margin: 0; background: var(--bg); color: var(--text);
+  font: 15px/1.5 -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+  -webkit-font-smoothing: antialiased;
+}
+main { max-width: 980px; margin: 0 auto; padding: 24px 16px 48px; }
+header { margin-bottom: 20px; }
+h1 { font-size: 26px; line-height: 1.2; margin: 0 0 4px; letter-spacing: -0.01em; }
+h2 { font-size: 15px; margin: 0 0 12px; text-transform: uppercase; letter-spacing: 0.04em; color: var(--text-2); font-weight: 600; }
+.sub { color: var(--text-2); margin: 0; }
+.alcance { display: block; width: 100%; margin: 0 0 16px; padding: 14px 16px; font-size: 16px; line-height: 1.5; color: var(--text); background: color-mix(in srgb, var(--accent) 12%, var(--surface)); border: 2px solid var(--accent); border-radius: 10px; }
+.alcance b { color: var(--accent); }
+.aviso { display: inline-block; margin-top: 10px; font-size: 13px; color: var(--text-2); border: 1px solid var(--border); border-radius: 999px; padding: 2px 10px; background: var(--surface); }
+section { background: var(--surface); border: 1px solid var(--border); border-radius: 10px; padding: 18px; margin-bottom: 16px; }
+.num { font-variant-numeric: tabular-nums; }
+
+/* Entradas */
+.entradas { display: grid; grid-template-columns: 1.3fr 1fr 1fr; gap: 16px; align-items: start; }
+.entradas > div { min-width: 0; }
+.t { display: block; font-size: 13px; font-weight: 600; color: var(--text-2); margin-bottom: 6px; }
+.campo { display: flex; align-items: center; border: 1px solid var(--border); border-radius: 8px; background: var(--bg); padding: 0 10px; }
+.campo:focus-within { border-color: var(--accent); box-shadow: 0 0 0 3px color-mix(in srgb, var(--accent) 20%, transparent); }
+.campo span { color: var(--muted); font-size: 18px; }
+.campo input { flex: 1; min-width: 0; border: 0; background: transparent; color: var(--text); font: inherit; font-size: 20px; font-weight: 600; padding: 8px 6px; outline: none; font-variant-numeric: tabular-nums; }
+.ayuda { font-size: 12.5px; color: var(--muted); margin-top: 6px; }
+.error { font-size: 13px; color: var(--text); background: var(--warn-bg); border-left: 3px solid var(--serious); padding: 6px 10px; margin-top: 8px; border-radius: 4px; }
+.seg { display: flex; flex-direction: column; gap: 6px; }
+.seg label { display: flex; gap: 8px; align-items: flex-start; border: 1px solid var(--border); border-radius: 8px; padding: 7px 10px; cursor: pointer; font-size: 13.5px; background: var(--bg); }
+.seg label:has(input:checked) { border-color: var(--accent); background: color-mix(in srgb, var(--accent) 8%, var(--surface)); }
+.seg input { margin: 3px 0 0; accent-color: var(--accent); }
+.seg b { display: block; }
+.seg small { color: var(--text-2); }
+select { width: 100%; font: inherit; font-size: 15px; padding: 9px 10px; border: 1px solid var(--border); border-radius: 8px; background: var(--bg); color: var(--text); }
+
+/* Tarjetas */
+.tarjetas { display: grid; grid-template-columns: repeat(4, 1fr); gap: 12px; margin-bottom: 16px; }
+.tarjeta { background: var(--surface); border: 1px solid var(--border); border-radius: 10px; padding: 14px 16px; }
+.tarjeta .et { font-size: 12.5px; color: var(--text-2); font-weight: 600; }
+.tarjeta .v { font-size: 26px; font-weight: 700; line-height: 1.2; margin: 6px 0 2px; letter-spacing: -0.01em; }
+.tarjeta .d { font-size: 12.5px; color: var(--muted); }
+.estado { display: inline-flex; align-items: center; gap: 5px; font-size: 12.5px; font-weight: 600; margin-top: 4px; }
+.estado i { width: 10px; height: 10px; border-radius: 2px; display: inline-block; }
+
+/* Relato */
+.relato p { margin: 0 0 8px; font-size: 16px; line-height: 1.6; }
+.relato p:last-child { margin: 0; }
+.relato .nota { font-size: 13px; color: var(--muted); }
+
+/* Comparador */
+.comp-cab { display: flex; justify-content: space-between; align-items: baseline; flex-wrap: wrap; gap: 8px; margin-bottom: 4px; }
+.leyenda { display: flex; gap: 14px; font-size: 12.5px; color: var(--text-2); flex-wrap: wrap; }
+.leyenda span { display: inline-flex; align-items: center; gap: 5px; }
+.leyenda i { width: 10px; height: 10px; border-radius: 2px; display: inline-block; }
+.leyenda .mejor { width: 12px; height: 12px; border: 2px solid var(--text); background: transparent; }
+.barras { position: relative; margin-top: 14px; }
+.fila { display: grid; grid-template-columns: 150px 1fr 150px; align-items: center; gap: 10px; padding: 3px 0; cursor: pointer; border-radius: 6px; }
+.fila:hover { background: var(--bg); }
+.fila.sel .nom { font-weight: 700; color: var(--text); }
+.fila .nom { font-size: 14px; color: var(--text-2); text-align: right; }
+.pista { position: relative; height: 26px; }
+.barra { position: absolute; left: 0; top: 3px; height: 20px; border-radius: 0 4px 4px 0; min-width: 2px; }
+.barra.mejor { outline: 2px solid var(--text); outline-offset: 2px; }
+.ref100 { position: absolute; top: -4px; bottom: -4px; width: 0; border-left: 1.5px dashed var(--muted); pointer-events: none; }
+.ref100 span { position: absolute; top: -16px; left: 4px; font-size: 11px; color: var(--muted); white-space: nowrap; }
+.fila .val { font-size: 13.5px; }
+.fila .val b { font-size: 14.5px; }
+.fila .val small { display: block; color: var(--muted); font-size: 12px; }
+.na { font-size: 13px; color: var(--muted); font-style: italic; padding-left: 4px; line-height: 26px; }
+.nota-inm { font-size: 12.5px; color: var(--muted); margin: 12px 0 0; }
+details { margin-top: 12px; font-size: 13.5px; }
+summary { cursor: pointer; color: var(--accent); font-weight: 600; }
+table { border-collapse: collapse; width: 100%; margin-top: 10px; font-variant-numeric: tabular-nums; }
+th, td { padding: 6px 8px; border-bottom: 1px solid var(--border); text-align: right; }
+th:first-child, td:first-child { text-align: left; }
+th { font-size: 12.5px; color: var(--text-2); font-weight: 600; }
+
+/* Gráfico de brecha */
+.desliz input[type=range] { width: 100%; accent-color: var(--accent); }
+.desliz .lim { display: flex; justify-content: space-between; font-size: 12px; color: var(--muted); }
+.graf { position: relative; margin-top: 10px; }
+.graf svg { width: 100%; height: auto; display: block; }
+.graf text { fill: var(--muted); font-size: 11px; font-family: inherit; }
+.tip { position: absolute; pointer-events: none; background: var(--surface); border: 1px solid var(--border); border-radius: 6px; padding: 6px 9px; font-size: 12.5px; box-shadow: 0 2px 8px rgba(0,0,0,.12); white-space: nowrap; display: none; z-index: 2; }
+.tip b { display: block; }
+
+footer { font-size: 13px; color: var(--text-2); }
+footer ul { margin: 6px 0 12px; padding-left: 18px; }
+footer li { margin-bottom: 3px; }
+footer .param { display: grid; grid-template-columns: repeat(auto-fit, minmax(210px, 1fr)); gap: 2px 18px; margin: 6px 0 12px; }
+footer .param div { display: flex; justify-content: space-between; border-bottom: 1px dotted var(--border); padding: 2px 0; }
+.oculto { display: none !important; }
+
+/* Mejora 2: personas de ejemplo */
+.ejemplos { display: flex; flex-wrap: wrap; gap: 6px; margin-top: 10px; }
+.ejemplos button { font: inherit; font-size: 12.5px; border: 1px solid var(--border); background: var(--bg); color: var(--text); border-radius: 999px; padding: 4px 11px; cursor: pointer; line-height: 1.3; }
+.ejemplos button small { color: var(--muted); }
+.ejemplos button:hover { border-color: var(--accent); }
+.ejemplos button.activo { border-color: var(--accent); background: color-mix(in srgb, var(--accent) 12%, var(--surface)); }
+
+/* Mejora 5: sensibilidad del rendimiento */
+.sens { grid-column: 1 / -1; border-top: 1px solid var(--border); padding-top: 14px; }
+.sens-fila { display: flex; align-items: center; gap: 12px; flex-wrap: wrap; }
+.sens-fila input[type=range] { flex: 1; min-width: 180px; accent-color: var(--accent); }
+.sens-fila output { font-weight: 700; font-size: 17px; min-width: 64px; }
+.sens-fila button { font: inherit; font-size: 13px; border: 1px solid var(--border); background: var(--bg); color: var(--text); border-radius: 6px; padding: 4px 10px; cursor: pointer; }
+.sens-fila button:disabled { opacity: .45; cursor: default; }
+.aviso-sens { margin-top: 8px; font-size: 13px; font-weight: 600; background: var(--warn-bg); border-left: 3px solid var(--serious); padding: 6px 10px; border-radius: 4px; }
+.chip-sens { display: inline-block; font-size: 11px; font-weight: 700; background: var(--warn-bg); border: 1px solid var(--serious); border-radius: 4px; padding: 0 5px; margin-left: 4px; vertical-align: 1px; }
+
+/* Mejora 1: barra de nivel de vida */
+.nivel { display: flex; height: 34px; border-radius: 6px; overflow: hidden; gap: 2px; background: var(--surface); }
+.nivel div { display: flex; align-items: center; justify-content: center; color: #fff; font-weight: 700; font-size: 13.5px; white-space: nowrap; overflow: hidden; min-width: 2px; }
+.nivel .haber { background: var(--accent); }
+.nivel .brecha { background: var(--brecha); background-image: repeating-linear-gradient(135deg, transparent 0 6px, rgba(255,255,255,.18) 6px 9px); }
+.nivel-ley { display: flex; gap: 22px; flex-wrap: wrap; margin-top: 10px; font-size: 13.5px; }
+.nivel-ley span { display: inline-flex; gap: 6px; align-items: baseline; }
+.nivel-ley i { width: 10px; height: 10px; border-radius: 2px; display: inline-block; align-self: center; }
+
+/* Mejora 3: perfiles e hipótesis */
+.fila .nom small { display: block; font-size: 11px; color: var(--muted); font-weight: 400; line-height: 1.2; }
+.fila.hip { box-shadow: inset 3px 0 0 var(--accent); background: color-mix(in srgb, var(--accent) 6%, transparent); }
+.leyenda .hipm { width: 4px; height: 12px; background: var(--accent); border-radius: 1px; }
+
+/* Mejora 4: evolución del fondo */
+#grafFondo text { fill: var(--muted); font-family: inherit; }
+
+.v small { font-size: 0.6em; font-weight: 600; color: var(--text-2); }
+.graf svg { touch-action: pan-y; }
+.graf text { font-size: 12px; }
+#tabla { overflow-x: auto; }
+.ref-ley { width: 0; height: 12px; border-left: 1.5px dashed var(--muted); }
+
+/* Resumen fijo para celular: aparece cuando las entradas quedan fuera de la pantalla */
+.resumen { display: none; }
+
+/* ===== Adaptable =====
+   Escritorio (> 900 px): el diseño de arriba, entradas en tres columnas.
+   Tablet (600 a 900 px): entradas en dos columnas, tarjetas de 2 por fila.
+   Celular (< 600 px): una columna, tarjetas de 1 por fila, controles de 44 px, texto >= 14 px. */
+@media (max-width: 900px) {
+  .entradas { grid-template-columns: 1fr 1fr; grid-template-areas: "sueldo mod" "sueldo instr"; }
+  .e-sueldo { grid-area: sueldo; }
+  .e-mod { grid-area: mod; }
+  .e-instr { grid-area: instr; }
+  .tarjetas { grid-template-columns: 1fr 1fr; }
+  .tarjeta { min-width: 0; }
+  .tarjeta .v { overflow-wrap: anywhere; }
+}
+@media (max-width: 599.98px) {
+  main { padding-block: 16px 40px; }
+  h1 { font-size: 22px; text-wrap: balance; }
+  h2 { font-size: 14px; text-wrap: balance; }
+  .sub { font-size: 15px; }
+  .aviso { border-radius: 8px; }
+  section { padding: 14px; margin-bottom: 12px; }
+
+  /* Texto nunca por debajo de 14 px */
+  .aviso, .t, .ayuda, .error, .seg label, .seg small, .tarjeta .et, .tarjeta .d, .estado, .relato .nota, .leyenda,
+  .fila .val, .fila .val small, .fila .nom small, .na, .nota-inm, details, th, td, .desliz .lim, .tip,
+  footer, .ejemplos button, .ejemplos small, .sens-fila button, .aviso-sens, .chip-sens, .nivel div,
+  .nivel-ley, .resumen, .resumen span, .v small, small { font-size: 14px; }
+  #graf text, #grafFondo text { font-size: 14px; }
+
+  /* Entradas apiladas y controles de al menos 44 px */
+  .entradas { grid-template-columns: 1fr; grid-template-areas: none; gap: 16px; }
+  .e-sueldo, .e-mod, .e-instr { grid-area: auto; }
+  .campo input { min-height: 44px; }
+  select { min-height: 44px; font-size: 16px; }  /* 16 px evita el zoom automático de iOS al tocar */
+  .seg label { min-height: 44px; align-items: center; padding: 8px 12px; }
+  .seg input { width: 20px; height: 20px; margin: 0; flex: none; }
+  .ejemplos { display: grid; grid-template-columns: 1fr; }
+  .ejemplos button { min-height: 44px; border-radius: 8px; padding: 8px 12px; display: flex; justify-content: space-between; align-items: center; text-align: left; }
+  .sens-fila { display: grid; grid-template-columns: 1fr auto; grid-template-areas: "r r" "mn mx" "v b"; gap: 4px 12px; align-items: center; }
+  #rend { grid-area: r; width: 100%; min-width: 0; height: 44px; margin: 0; }
+  #rendMinT { grid-area: mn; }
+  #rendMaxT { grid-area: mx; text-align: right; }
+  #rendVal { grid-area: v; }
+  #rendBase { grid-area: b; min-height: 44px; }
+  summary { padding-block: 12px; }
+
+  /* Tarjetas de 1 por fila, números grandes */
+  .tarjetas { grid-template-columns: 1fr; gap: 10px; margin-bottom: 12px; }
+  .tarjeta { padding: 14px 16px; }
+  .tarjeta .v { font-size: 30px; }
+  .relato p { font-size: 16px; }
+  .nivel { height: 40px; }
+  .nivel-ley { flex-direction: column; gap: 6px; }
+  .nivel-ley span { display: block; }
+  .nivel-ley i { margin-right: 6px; vertical-align: -1px; }
+
+  /* Comparador: nombre y valor arriba, barra a todo el ancho abajo */
+  .fila { grid-template-columns: minmax(0, 1fr) auto; grid-template-areas: "nom val" "pista pista"; gap: 2px 10px; padding: 8px 8px 10px; }
+  .fila .nom { grid-area: nom; text-align: left; font-size: 15px; min-width: 0; }
+  .fila .val { grid-area: val; text-align: right; }
+  .fila .pista { grid-area: pista; height: 22px; }
+  .barra { top: 2px; height: 18px; }
+  .ref100 span { display: none; }  /* la línea del 100% está explicada en la leyenda */
+  .leyenda { gap: 6px 14px; }
+
+  /* Tabla: se desplaza dentro de su propio recuadro */
+  #tabla table { min-width: 560px; }
+
+  /* Resumen fijo arriba al bajar por la página */
+  .resumen {
+    display: flex; flex-wrap: wrap; position: fixed; left: 0; right: 0; top: 0; z-index: 10; min-height: 44px;
+    padding: calc(env(safe-area-inset-top, 0px) + 6px) 16px 6px;
+    background: var(--surface); border: 0; border-bottom: 1px solid var(--border);
+    box-shadow: 0 2px 10px rgba(0,0,0,.08); gap: 2px 14px; align-items: center;
+    font: inherit; color: var(--text); text-align: left; cursor: pointer;
+    transform: translateY(-110%); transition: transform .2s ease;
+  }
+  .resumen.visible { transform: none; }
+  .resumen div { min-width: 0; }
+  .resumen span { display: block; color: var(--muted); line-height: 1.2; }
+  .resumen b { font-variant-numeric: tabular-nums; white-space: nowrap; }
+  .resumen .ir { margin-left: auto; color: var(--accent); font-weight: 600; white-space: nowrap; }
+}
+@media (prefers-reduced-motion: reduce) { .resumen { transition: none; } }
+@media print {
+  body { background: #fff; }
+  section, .tarjeta { break-inside: avoid; }
+  .resumen, .tip { display: none !important; }
+}
+</style>
+</head>
+<body>
+<main>
+  <button type="button" class="resumen" id="resumen" aria-label="Volver a los datos de entrada">
+    <div><span>Sueldo neto</span><b id="rNeto"></b></div>
+    <div><span>Brecha</span><b id="rBrecha"></b></div>
+    <div><span id="rAporteEt">Aporte</span><b id="rAporte"></b></div>
+    <div class="ir">Cambiar ↑</div>
+  </button>
+  <header>
+    <h1>¿Cuánto te va a faltar cuando te jubiles?</h1>
+    <p class="sub">Brecha entre el haber jubilatorio y el sueldo neto, y cuánto habría que ahorrar para cubrirla.</p>
+    <span class="aviso">Herramienta de apoyo para el TFG · Resultados de un modelo con supuestos · No es asesoramiento financiero</span>
+  </header>
+
+  <!-- Alcance del trabajo: siempre visible, no se puede cerrar -->
+  <p class="alcance" role="note"><b>Para quién es:</b> trabajadores en relación de dependencia que aportan al Sistema Integrado Previsional Argentino (SIPA). No contempla autónomos, monotributistas ni regímenes especiales.</p>
+
+  <!-- 1. Entradas -->
+  <section aria-label="Entradas" id="secEntradas">
+    <div class="entradas">
+      <div class="e-sueldo">
+        <label class="t" for="sueldo">Sueldo NETO mensual (lo que te llega a la cuenta)</label>
+        <div class="campo"><span>$</span><input id="sueldo" type="text" inputmode="decimal" autocomplete="off" value="1.000.000"></div>
+        <div class="ayuda num" id="ayudaSueldo"></div>
+        <div class="error oculto" id="errorSueldo" role="alert"></div>
+        <div class="ejemplos" id="ejemplos" aria-label="Personas de ejemplo"></div>
+      </div>
+      <div class="e-mod">
+        <span class="t">Modalidad de retiro</span>
+        <div class="seg" role="radiogroup">
+          <label><input type="radio" name="mod" value="B" checked><span><b>B · Consumir el capital</b><small id="txtModB"></small></span></label>
+          <label><input type="radio" name="mod" value="A"><span><b>A · Vivir de los intereses</b><small>El capital queda intacto</small></span></label>
+        </div>
+      </div>
+      <div class="e-instr">
+        <label class="t" for="instr">Instrumento</label>
+        <select id="instr"></select>
+        <div class="ayuda">En el comparador se muestran todos.</div>
+      </div>
+      <div class="sens" id="sens">
+        <label class="t" for="rend">Rendimiento real anual de <span id="sensNom"></span> <span style="font-weight:400">(sensibilidad)</span></label>
+        <div class="sens-fila">
+          <span class="num ayuda" style="margin:0" id="rendMinT"></span>
+          <input id="rend" type="range">
+          <span class="num ayuda" style="margin:0" id="rendMaxT"></span>
+          <output class="num" id="rendVal"></output>
+          <button type="button" id="rendBase"></button>
+        </div>
+        <div class="aviso-sens oculto" id="avisoSens" role="status">⚠ Sensibilidad: escenario hipotético, no el caso base del trabajo.</div>
+      </div>
+      <div class="sens ayuda oculto" id="sensNo" style="margin:0">El Inmobiliario no tiene un rendimiento único: sale de la simulación de compra y alquiler, así que no admite sensibilidad.</div>
+    </div>
+  </section>
+
+  <div id="resultados">
+    <!-- 2. Tarjetas -->
+    <div class="tarjetas">
+      <div class="tarjeta"><div class="et">Haber jubilatorio mensual</div><div class="v num" id="cHaber"></div></div>
+      <div class="tarjeta"><div class="et">Brecha mensual</div><div class="v num" id="cBrecha"></div><div class="d num" id="cBrechaD"></div></div>
+      <div class="tarjeta"><div class="et">Brecha como % del sueldo neto</div><div class="v num" id="cBrechaPct"></div><div class="d" id="cBrechaPctD"></div></div>
+      <div class="tarjeta"><div class="et" id="cAporteEt">Aporte requerido</div><div class="v num" id="cAporte"></div><div class="d num" id="cAporteD"></div><div id="cAporteE"></div></div>
+    </div>
+
+    <!-- Barra: de dónde sale tu nivel de vida -->
+    <section aria-label="De dónde sale tu nivel de vida">
+      <h2>De dónde saldría tu nivel de vida al jubilarte</h2>
+      <div class="nivel" id="nivel"></div>
+      <div class="nivel-ley num" id="nivelLey"></div>
+    </section>
+
+    <!-- 3. Relato -->
+    <section class="relato" aria-label="Relato">
+      <h2>Qué dicen tus números</h2>
+      <div id="relato"></div>
+    </section>
+
+    <!-- 4. Comparador -->
+    <section aria-label="Comparador de instrumentos">
+      <div class="comp-cab">
+        <h2 id="compTit" style="margin:0">Aporte requerido por instrumento</h2>
+        <div class="leyenda">
+          <span><i style="background:var(--good)"></i>✓ Alcanzable</span>
+          <span><i style="background:var(--serious)"></i>✕ No alcanzable (≥ 100% del neto)</span>
+          <span><i class="mejor"></i>Mejor opción</span>
+          <span><i class="ref-ley"></i>100% del neto</span>
+          <span><i class="hipm"></i>Perfiles de la hipótesis (moderado y agresivo)</span>
+        </div>
+      </div>
+      <div class="ayuda" id="compSub"></div>
+      <div id="compSinBrecha" class="relato oculto"><p style="margin-top:12px">No hay brecha: según el modelo, el haber neto supera al sueldo neto, así que no hace falta aportar.</p></div>
+      <div class="barras" id="barras"></div>
+      <p class="nota-inm">Inmobiliario: calculado con simulación de compra y alquiler de unidades enteras.</p>
+      <details>
+        <summary>Ver tabla con ambas modalidades</summary>
+        <div id="tabla"></div>
+      </details>
+    </section>
+
+    <!-- Evolución del fondo -->
+    <section aria-label="Evolución del fondo">
+      <h2 id="fondoTit">Evolución del fondo</h2>
+      <div class="ayuda" id="fondoSub" style="margin:-6px 0 6px"></div>
+      <div id="fondoMsg" class="relato oculto"><p></p></div>
+      <div class="graf" id="grafFondo">
+        <svg id="svgFondo" viewBox="0 0 720 280" role="img" aria-label="Saldo del fondo mes a mes"></svg>
+        <div class="tip" id="tipFondo"></div>
+      </div>
+      <div class="ayuda" id="fondoNota"></div>
+    </section>
+  </div>
+
+  <!-- 5. Deslizador -->
+  <section aria-label="Cómo crece la brecha">
+    <h2>Cómo crece la brecha con el sueldo</h2>
+    <div class="desliz">
+      <input id="desliz" type="range" min="0" max="1000" step="1" aria-label="Sueldo neto">
+      <div class="lim num"><span id="limMin"></span><span id="limMax"></span></div>
+    </div>
+    <div class="graf" id="graf">
+      <svg id="svg" viewBox="0 0 720 260" role="img" aria-label="Brecha como porcentaje del sueldo neto según el sueldo neto"></svg>
+      <div class="tip" id="tip"></div>
+    </div>
+    <div class="ayuda">Brecha mensual como % del sueldo neto. Eje horizontal en escala logarítmica. Mové el deslizador, o pasá el mouse o tocá la curva para ver cada valor.</div>
+  </section>
+
+  <!-- 6. Pie -->
+  <footer>
+    <section>
+      <h2>Supuestos y limitaciones</h2>
+      <ul id="supuestos"></ul>
+      <h2 style="margin-top:14px">Parámetros usados</h2>
+      <div class="param num" id="params"></div>
+      <p style="margin:0;color:var(--muted)">Es una herramienta de apoyo para la defensa del TFG. No es asesoramiento financiero ni una predicción: son resultados de un modelo con supuestos.</p>
+    </section>
+  </footer>
+</main>
+
+<script>
+/* ===== modelo.js (embebido sin cambios) ===== */
+// Modelo del dashboard TFG. Sin dependencias. Entrada: sueldo NETO mensual en ARS.
+// Todos los parámetros salen de dashboard_parametros.json (se pasan a crearModelo).
+function crearModelo(J) {
+  const P = J.parametros, I = J.inmobiliario, MEP = J.mep_corte;
+  const NACC = 360, NRET_F = J.anios_retiro * 12, NRET = I.meses_retiro_simulacion;
+  const R = J.rendimientos_reales_anuales;
+  const price = m => I.precio_depto_usd * Math.pow(1 + I.apreciacion_real_mensual, m - 1);
+  const DEC = I.decaimiento_mensual_efectivo;
+
+  function brutoDesdeNeto(neto) {
+    const lim = P.tope * (1 - P.aportes_pers);
+    return neto <= lim ? neto / (1 - P.aportes_pers) : neto + P.aportes_pers * P.tope;
+  }
+  function sistema(bruto) {
+    const base = Math.min(bruto, P.tope), pap = P.tasa_pc * P.anios * base;
+    const h = Math.min(Math.max(P.pbu + pap, P.hmin), P.hmax);
+    const neto = bruto - P.aportes_pers * base;
+    const hn = h - P.pami_hasta_hmin * Math.min(h, P.hmin) - P.pami_exceso * Math.max(0, h - P.hmin);
+    return { bruto, neto, haber_bruto: h, haber_neto: hn, brecha: Math.max(0, neto - hn) };
+  }
+  function factores(r) {
+    const c = Math.pow(1 + r, 1 / 12) - 1;
+    return { acum: (1 + c) * (Math.pow(1 + c, NACC) - 1) / c,
+             B: (1 - Math.pow(1 + c, -NRET_F)) / c, A: c > 0 ? 1 / c : null };
+  }
+  function acumular(ap) {
+    let u = 0, cash = 0;
+    for (let m = 1; m <= NACC; m++) {
+      const M = price(m), E = u * M * I.rentabilidad_alquiler_bruta / 12;
+      const F = (cash + ap + E) * (1 + DEC);
+      const g = F >= M * (1 + I.costos_compra) ? 1 : 0;
+      u += g; cash = F - g * M * (1 + I.costos_compra);
+    }
+    return [u, cash];
+  }
+  function retiroOk(U, C, br) {
+    for (let k = 1; k <= NRET; k++) {
+      const M = price(NACC + k);
+      let avail = C + U * M * I.rentabilidad_alquiler_bruta / 12;
+      if (avail < br - 1e-9) {
+        const n = Math.ceil((br - avail) / (M * (1 - I.comision_venta)) - 1e-12);
+        if (n > U) return false;
+        U -= n; avail += n * M * (1 - I.comision_venta);
+      }
+      C = (avail - br) * (1 + DEC);
+    }
+    return true;
+  }
+  function biseccion(pred) {
+    let lo = 0, hi = 1e6;
+    for (let i = 0; i < 80; i++) { const mid = (lo + hi) / 2; if (pred(mid)) hi = mid; else lo = mid; }
+    return hi;
+  }
+  const r2 = x => Math.round(x * 100) / 100;
+  function inmobA(brUsd) {
+    const n = Math.ceil(brUsd / (price(NACC + NRET) * I.rentabilidad_alquiler_bruta / 12) - 1e-12);
+    return [r2(biseccion(a => acumular(a)[0] >= n)), n];
+  }
+  function inmobB(brUsd) {
+    const ap = biseccion(a => { const [u, c] = acumular(a); return retiroOk(u, c, brUsd); });
+    return [r2(ap), acumular(ap)[0]];
+  }
+  function calcular(neto) {
+    const s = sistema(brutoDesdeNeto(neto));
+    const out = { neto_in: neto, ...s, brecha_usd: s.brecha / MEP, neto_usd: s.neto / MEP, A: {}, B: {} };
+    if (s.brecha > 0) {
+      for (const k of Object.keys(R)) {
+        const f = factores(R[k]);
+        out.B[k] = s.brecha * f.B / f.acum / s.neto;
+        out.A[k] = f.A ? s.brecha * f.A / f.acum / s.neto : null;
+      }
+      const [apA, nA] = inmobA(out.brecha_usd), [apB, nB] = inmobB(out.brecha_usd);
+      out.A.Inmobiliario = apA / out.neto_usd; out.A._deptos = nA; out.A._inm_usd = apA;
+      out.B.Inmobiliario = apB / out.neto_usd; out.B._deptos = nB; out.B._inm_usd = apB;
+    }
+    return out;
+  }
+  // ===== Agregado para las mejoras del dashboard (no cambia nada de lo anterior) =====
+  // Factores con un rendimiento cualquiera. Si c = 0 se usan los límites de las mismas
+  // fórmulas (fAcum -> 360, fB -> 242,4) porque factores() divide por c.
+  function factoresR(r) {
+    const c = Math.pow(1 + r, 1 / 12) - 1;
+    if (c === 0) return { c, acum: NACC, B: NRET_F, A: null };
+    return { c, ...factores(r) };
+  }
+  // Aporte requerido (% del neto) con un rendimiento real anual r elegido por el usuario.
+  function aporteConRendimiento(neto, r) {
+    const s = sistema(brutoDesdeNeto(neto)), f = factoresR(r);
+    if (!(s.brecha > 0)) return { r, brecha: s.brecha, neto: s.neto, A: null, B: null };
+    return { r, brecha: s.brecha, neto: s.neto,
+             B: s.brecha * f.B / f.acum / s.neto, A: f.A ? s.brecha * f.A / f.acum / s.neto : null };
+  }
+  // Saldo del fondo mes a mes (ARS de hoy) para un instrumento financiero.
+  // m = 0..360 acumulación; luego k = 1..ceil(242,4) de retiro. Devuelve null si no aplica.
+  function trayectoriaFondo(neto, r, mod) {
+    const s = sistema(brutoDesdeNeto(neto)), f = factoresR(r), c = f.c;
+    if (!(s.brecha > 0)) return null;
+    if (mod === 'A' && !f.A) return null;
+    const fRet = mod === 'A' ? f.A : f.B, ap = s.brecha * fRet / f.acum;
+    const acum = m => c === 0 ? ap * m : ap * (1 + c) * (Math.pow(1 + c, m) - 1) / c;
+    const S0 = acum(NACC);
+    const ret = k => mod === 'A' ? S0
+      : (c === 0 ? S0 - s.brecha * k : S0 * Math.pow(1 + c, k) - s.brecha * (Math.pow(1 + c, k) - 1) / c);
+    const saldo = [];
+    for (let m = 0; m <= NACC; m++) saldo.push(acum(m));
+    for (let k = 1; k <= Math.ceil(NRET_F); k++) saldo.push(Math.max(0, ret(k)));
+    return { ap, S0, brecha: s.brecha, saldo, saldoFinalB: mod === 'B' ? ret(NRET_F) : null,
+             meses_acum: NACC, meses_retiro: NRET_F };
+  }
+  // Trayectoria de la simulación inmobiliaria (USD de hoy): repite paso a paso las cuentas de
+  // acumular() y retiroOk() guardando cada mes. Usa el mismo aporte que encuentra la bisección.
+  function trayectoriaInmob(neto, mod) {
+    const s = sistema(brutoDesdeNeto(neto));
+    if (!(s.brecha > 0)) return null;
+    const br = s.brecha / MEP;
+    let ap, nObj = null;
+    if (mod === 'A') {
+      nObj = Math.ceil(br / (price(NACC + NRET) * I.rentabilidad_alquiler_bruta / 12) - 1e-12);
+      ap = biseccion(a => acumular(a)[0] >= nObj);
+    } else {
+      ap = biseccion(a => { const [u, c] = acumular(a); return retiroOk(u, c, br); });
+    }
+    const pasos = [{ m: 0, u: 0, cash: 0, patrimonio: 0 }];
+    let u = 0, cash = 0;
+    for (let m = 1; m <= NACC; m++) {
+      const Mp = price(m), E = u * Mp * I.rentabilidad_alquiler_bruta / 12;
+      const F = (cash + ap + E) * (1 + DEC);
+      const g = F >= Mp * (1 + I.costos_compra) ? 1 : 0;
+      u += g; cash = F - g * Mp * (1 + I.costos_compra);
+      pasos.push({ m, u, cash, patrimonio: cash + u * Mp });
+    }
+    const uFin = u, cashFin = cash;
+    let factible = true;
+    for (let k = 1; k <= NRET; k++) {
+      const Mp = price(NACC + k);
+      if (mod === 'A') {
+        // A: las unidades no se venden y el alquiler se consume; el efectivo remanente se erosiona.
+        cash = cash * (1 + DEC);
+      } else {
+        let avail = cash + u * Mp * I.rentabilidad_alquiler_bruta / 12;
+        if (avail < br - 1e-9) {
+          const n = Math.ceil((br - avail) / (Mp * (1 - I.comision_venta)) - 1e-12);
+          if (n > u) { factible = false; break; }
+          u -= n; avail += n * Mp * (1 - I.comision_venta);
+        }
+        cash = (avail - br) * (1 + DEC);
+      }
+      pasos.push({ m: NACC + k, u, cash, patrimonio: cash + u * Mp });
+    }
+    return { ap_usd: ap, unidades_fin_acum: uFin, efectivo_fin_acum: cashFin, unidades_objetivo: nObj,
+             factible, pasos, meses_acum: NACC, meses_retiro: NRET };
+  }
+  return { calcular, brutoDesdeNeto, sistema, aporteConRendimiento, trayectoriaFondo, trayectoriaInmob };
+}
+if (typeof module !== 'undefined') module.exports = { crearModelo };
+
+</script>
+<script>
+/* ===== dashboard_parametros.json (embebido sin cambios) ===== */
+const PARAMETROS = {
+ "fecha_datos": "septiembre 2026",
+ "parametros": {
+  "smvm": 383800,
+  "pbu": 196080.12,
+  "tope": 4691748.47,
+  "hmin": 428633.2,
+  "hmax": 2884295.54,
+  "anios": 30,
+  "tasa_pc": 0.015,
+  "aportes_pers": 0.17,
+  "pami_hasta_hmin": 0.03,
+  "pami_exceso": 0.06
+ },
+ "rendimientos_reales_anuales": {
+  "SP500": 0.081086352333122,
+  "MEGAQM": 0.0388841914108131,
+  "TIPS": 0.00935879754018987,
+  "Colchon": -0.0248183724218636
+ },
+ "mep_corte": 1547.64,
+ "anios_retiro": 20.2,
+ "meses_acumulacion": 360,
+ "factores": {
+  "SP500": {
+   "acumulacion": 1446.9703494235519,
+   "modalidadB": 121.65283106743004,
+   "modalidadA": 153.41296174698502
+  },
+  "MEGAQM": {
+   "acumulacion": 674.4440361081206,
+   "modalidadB": 168.7354237111579,
+   "modalidadA": 314.0708247170199
+  },
+  "TIPS": {
+   "acumulacion": 415.4960866690341,
+   "modalidadB": 220.87384145932396,
+   "modalidadA": 1287.7067551130015
+  },
+  "Colchon": {
+   "acumulacion": 252.56210704444737,
+   "modalidadB": 316.13836068977366,
+   "modalidadA": null
+  }
+ },
+ "inmobiliario_usd_por_mes_tabla": [
+  {
+   "smvm": 1,
+   "B_usd": 0,
+   "B_deptos": 0,
+   "A_usd": 0,
+   "A_deptos": 0
+  },
+  {
+   "smvm": 3,
+   "B_usd": 218.5,
+   "B_deptos": 0,
+   "A_usd": 379.55,
+   "A_deptos": 1
+  },
+  {
+   "smvm": 5,
+   "B_usd": 387.51,
+   "B_deptos": 1,
+   "A_usd": 574.85,
+   "A_deptos": 2
+  },
+  {
+   "smvm": 10,
+   "B_usd": 594.55,
+   "B_deptos": 2,
+   "A_usd": 937.24,
+   "A_deptos": 4
+  },
+  {
+   "smvm": 12.2,
+   "B_usd": 665.61,
+   "B_deptos": 2,
+   "A_usd": 1112.67,
+   "A_deptos": 5
+  },
+  {
+   "smvm": 15,
+   "B_usd": 945.96,
+   "B_deptos": 4,
+   "A_usd": 1637.2,
+   "A_deptos": 8
+  },
+  {
+   "smvm": 20,
+   "B_usd": 1380.28,
+   "B_deptos": 6,
+   "A_usd": 2502.69,
+   "A_deptos": 13
+  },
+  {
+   "smvm": 30,
+   "B_usd": 2269.35,
+   "B_deptos": 11,
+   "A_usd": 4238.02,
+   "A_deptos": 23
+  },
+  {
+   "smvm": 40,
+   "B_usd": 3150.7,
+   "B_deptos": 16,
+   "A_usd": 5970.28,
+   "A_deptos": 33
+  },
+  {
+   "smvm": 60,
+   "B_usd": 4914.22,
+   "B_deptos": 26,
+   "A_usd": 9435.91,
+   "A_deptos": 53
+  },
+  {
+   "smvm": 80,
+   "B_usd": 6696.58,
+   "B_deptos": 37,
+   "A_usd": 12890.28,
+   "A_deptos": 73
+  }
+ ],
+ "validacion_excel": [
+  {
+   "smvm": 1,
+   "bruto": 383800,
+   "excel_brecha": 0,
+   "excel_B": {
+    "SP500": 0,
+    "MEGAQM": 0,
+    "TIPS": 0,
+    "Colchon": 0
+   },
+   "excel_A": {
+    "SP500": 0,
+    "MEGAQM": 0,
+    "TIPS": 0
+   }
+  },
+  {
+   "smvm": 3,
+   "bruto": 1151400,
+   "excel_brecha": 271445.4912,
+   "excel_B": {
+    "SP500": 0.0238803618421777,
+    "MEGAQM": 0.0710622022711572,
+    "TIPS": 0.150992599336421,
+    "Colchon": 0.355539059837346
+   },
+   "excel_A": {
+    "SP500": 0.0301148522862367,
+    "MEGAQM": 0.13226958502629,
+    "TIPS": 0.880295234840597
+   }
+  },
+  {
+   "smvm": 5,
+   "bruto": 1919000,
+   "excel_brecha": 583858.6912,
+   "excel_B": {
+    "SP500": 0.0308189097168314,
+    "MEGAQM": 0.0917096487292713,
+    "TIPS": 0.194864186632212,
+    "Colchon": 0.458842552652673
+   },
+   "excel_A": {
+    "SP500": 0.0388648597487336,
+    "MEGAQM": 0.170701115257316,
+    "TIPS": 1.1360690238283
+   }
+  },
+  {
+   "smvm": 10,
+   "bruto": 3838000,
+   "excel_brecha": 1364891.6912,
+   "excel_B": {
+    "SP500": 0.0360228206228218,
+    "MEGAQM": 0.107195233572857,
+    "TIPS": 0.227767877104055,
+    "Colchon": 0.536320172264169
+   },
+   "excel_A": {
+    "SP500": 0.0454273653456062,
+    "MEGAQM": 0.199524762930586,
+    "TIPS": 1.32789936556907
+   }
+  },
+  {
+   "smvm": 12.2,
+   "bruto": 4682360,
+   "excel_brecha": 1708546.2112,
+   "excel_B": {
+    "SP500": 0.036961230786197,
+    "MEGAQM": 0.109987716085635,
+    "TIPS": 0.233701329484224,
+    "Colchon": 0.550291546292471
+   },
+   "excel_A": {
+    "SP500": 0.0466107679942226,
+    "MEGAQM": 0.204722469888061,
+    "TIPS": 1.36249172227642
+   }
+  },
+  {
+   "smvm": 15,
+   "bruto": 5757000,
+   "excel_brecha": 2777618.84849,
+   "excel_B": {
+    "SP500": 0.0470875245297763,
+    "MEGAQM": 0.140121126082481,
+    "TIPS": 0.297728642976879,
+    "Colchon": 0.701055298576579
+   },
+   "excel_A": {
+    "SP500": 0.0593807520635729,
+    "MEGAQM": 0.260810425345749,
+    "TIPS": 1.73577451371741
+   }
+  },
+  {
+   "smvm": 20,
+   "bruto": 7676000,
+   "excel_brecha": 4696618.84849,
+   "excel_B": {
+    "SP500": 0.0574063986977244,
+    "MEGAQM": 0.170827609015173,
+    "TIPS": 0.36297361887553,
+    "Colchon": 0.854686254610603
+   },
+   "excel_A": {
+    "SP500": 0.0723935938865629,
+    "MEGAQM": 0.317965053619528,
+    "TIPS": 2.11615634457061
+   }
+  },
+  {
+   "smvm": 30,
+   "bruto": 11514000,
+   "excel_brecha": 8534618.84849,
+   "excel_B": {
+    "SP500": 0.0669572627656907,
+    "MEGAQM": 0.199248678961585,
+    "TIPS": 0.42336256109767,
+    "Colchon": 0.996882811505377
+   },
+   "excel_A": {
+    "SP500": 0.0844379197855418,
+    "MEGAQM": 0.370865794205509,
+    "TIPS": 2.46822722955995
+   }
+  },
+  {
+   "smvm": 40,
+   "bruto": 15352000,
+   "excel_brecha": 12372618.84849,
+   "excel_B": {
+    "SP500": 0.0714709958847532,
+    "MEGAQM": 0.212680461026893,
+    "TIPS": 0.451902342063401,
+    "Colchon": 1.06408482628699
+   },
+   "excel_A": {
+    "SP500": 0.0901300615980659,
+    "MEGAQM": 0.395866655185904,
+    "TIPS": 2.63461573666519
+   }
+  },
+  {
+   "smvm": 60,
+   "bruto": 23028000,
+   "excel_brecha": 20048618.84849,
+   "excel_B": {
+    "SP500": 0.0758227822718443,
+    "MEGAQM": 0.225630328642975,
+    "TIPS": 0.479418153703372,
+    "Colchon": 1.12887572229203
+   },
+   "excel_A": {
+    "SP500": 0.0956179769443499,
+    "MEGAQM": 0.419970518575735,
+    "TIPS": 2.79503444576676
+   }
+  },
+  {
+   "smvm": 80,
+   "bruto": 30704000,
+   "excel_brecha": 27724618.84849,
+   "excel_B": {
+    "SP500": 0.0779406448684166,
+    "MEGAQM": 0.231932577378349,
+    "TIPS": 0.492809139175336,
+    "Colchon": 1.16040719076082
+   },
+   "excel_A": {
+    "SP500": 0.0982887538647261,
+    "MEGAQM": 0.431701027880521,
+    "TIPS": 2.87310463432298
+   }
+  }
+ ],
+ "ejemplo_1M": {
+  "bruto": 1000000,
+  "neto": 830000,
+  "haber_bruto": 646080.1199999999,
+  "haber_neto": 620174.3087999999,
+  "brecha": 209825.69120000012,
+  "brecha_pct_neto": 0.2528020375903616,
+  "B_SP500": 0.02125412147162121,
+  "A_SP500": 0.026802974461681634,
+  "B_MEGAQM": 0.063247143786761,
+  "A_MEGAQM": 0.11772325083384624,
+  "B_TIPS": 0.1343872035449642,
+  "A_TIPS": 0.7834848557087526,
+  "B_Colchon": 0.31643868780674445,
+  "A_Colchon": null
+ },
+ "inmobiliario": {
+  "precio_depto_usd": 131272,
+  "rentabilidad_alquiler_bruta": 0.0436,
+  "costos_compra": 0.08,
+  "comision_venta": 0.02,
+  "apreciacion_real_anual": -0.012996201017176578,
+  "apreciacion_real_mensual": -0.0010895219175326432,
+  "inflacion_usd_anual_para_efectivo": 0.02545,
+  "decaimiento_mensual_efectivo": -0.002092103547402413,
+  "meses_retiro_simulacion": 242,
+  "meses_acumulacion": 360,
+  "nota": "Se reconstruyó en Python/JS (el script original no se conservó). Modalidad A reproduce el Excel al centavo (10/10). Modalidad B difiere hasta 0,07 puntos de % del neto en el Cuadro 6."
+ },
+ "entrada": "sueldo NETO mensual en ARS (lo que llega a la cuenta); bruto = neto/0.83 si bruto\u003c=tope, si no neto+0.17*tope"
+};
+</script>
+<script>
+(function () {
+  'use strict';
+  const J = PARAMETROS, P = J.parametros, MEP = J.mep_corte;
+  const M = crearModelo(J);
+
+  // Nombres para mostrar (solo etiquetas; los números salen del JSON)
+  const NOMBRES = { SP500: 'S&P 500', MEGAQM: 'MEGAQM', TIPS: 'TIPS', Colchon: 'Colchón USD', Inmobiliario: 'Inmobiliario' };
+  const INSTR = Object.keys(J.rendimientos_reales_anuales).concat('Inmobiliario');
+  const nombre = k => NOMBRES[k] || k;
+  // Perfil de cada instrumento; la hipótesis del trabajo se refiere a los perfiles moderado y agresivo
+  const PERFIL = { SP500: 'Agresivo', MEGAQM: 'Moderado', TIPS: 'Conservador (fuera de la hipótesis)', Colchon: 'Contrafáctico', Inmobiliario: 'Real, ilíquido' };
+  const HIPOTESIS = { SP500: true, MEGAQM: true };
+  const R = J.rendimientos_reales_anuales;
+  const financiero = k => R[k] !== undefined;
+  // Sensibilidad del rendimiento: rango pedido para el deslizador (−3% a +12% real anual)
+  const REND_MIN = -0.03, REND_MAX = 0.12, REND_PASO = 0.0001;
+
+  // Rango válido: neto de la menor y la mayor cantidad de SMVM del Excel (1 y 80)
+  const smvms = J.validacion_excel.map(v => v.smvm);
+  const SMVM_MIN = Math.min(...smvms), SMVM_MAX = Math.max(...smvms);
+  const NETO_MIN = M.sistema(SMVM_MIN * P.smvm).neto, NETO_MAX = M.sistema(SMVM_MAX * P.smvm).neto;
+  const MIN_R = Math.round(NETO_MIN), MAX_R = Math.round(NETO_MAX);
+  const ANIOS_AP = J.meses_acumulacion / 12;
+  const NETO_TOPE = M.sistema(P.tope).neto;
+
+  // ---------- formato argentino ----------
+  function miles(s) { return s.replace(/\B(?=(\d{3})+(?!\d))/g, '.'); }
+  function num(x, dec) {
+    dec = dec || 0;
+    const neg = x < 0, f = Math.abs(x).toFixed(dec).split('.');
+    return (neg ? '−' : '') + miles(f[0]) + (dec ? ',' + f[1] : '');
+  }
+  const $ = x => '$' + num(Math.round(x));
+  const usd = (x, dec) => 'US$' + num(x, dec === undefined ? 0 : dec);
+  const pct = (x, dec) => num(x * 100, dec === undefined ? 1 : dec) + '%';
+  const esc = s => String(s).replace(/[&<>"]/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c]));
+
+  function parsear(s) {
+    const t = String(s).replace(/[$\s]/g, '').replace(/\./g, '').replace(',', '.');
+    if (!/^\d+(\.\d+)?$/.test(t)) return NaN;
+    return parseFloat(t);
+  }
+
+  // ---------- DOM ----------
+  const el = id => document.getElementById(id);
+  const inp = el('sueldo'), sel = el('instr'), desliz = el('desliz');
+  INSTR.forEach(k => { const o = document.createElement('option'); o.value = k; o.textContent = nombre(k) + ' · ' + PERFIL[k]; sel.appendChild(o); });
+  el('txtModB').textContent = 'Se agota en ' + num(J.anios_retiro, 1) + ' años';
+  el('limMin').textContent = $(NETO_MIN);
+  el('limMax').textContent = $(NETO_MAX);
+
+  const estado = { neto: 1000000, mod: 'B', instr: 'SP500', rSens: null };  // rSens = null: rendimiento base del JSON
+
+  // Personas de ejemplo: neto de n SMVM según sistema(), redondeado
+  const EJEMPLOS = [['Sueldo mínimo', 1], ['3 SMVM', 3], ['10 SMVM', 10], ['20 SMVM', 20]]
+    .map(([t, n]) => ({ t, n, neto: Math.round(M.sistema(n * P.smvm).neto) }));
+  el('ejemplos').innerHTML = '<span class="ayuda" style="margin:0;align-self:center">Personas de ejemplo:</span>' +
+    EJEMPLOS.map((e, i) => '<button type="button" data-i="' + i + '">' + esc(e.t) + ' <small class="num">' + $(e.neto) + '</small></button>').join('');
+
+  // Deslizador de rendimiento
+  const rend = el('rend');
+  rend.min = REND_MIN; rend.max = REND_MAX; rend.step = REND_PASO;
+  el('rendMinT').textContent = pct(REND_MIN, 0); el('rendMaxT').textContent = '+' + pct(REND_MAX, 0);
+  const rElegido = () => estado.rSens !== null ? estado.rSens : R[estado.instr];
+
+  // deslizador logarítmico
+  const aDesliz = n => Math.round(1000 * Math.log(n / NETO_MIN) / Math.log(NETO_MAX / NETO_MIN));
+  function desdeDesliz(v) {
+    if (+v <= 0) return MIN_R;
+    if (+v >= 1000) return MAX_R;
+    const n = NETO_MIN * Math.pow(NETO_MAX / NETO_MIN, v / 1000);
+    const paso = n < 2e6 ? 5000 : n < 1e7 ? 10000 : 50000;
+    return Math.min(MAX_R, Math.max(MIN_R, Math.round(n / paso) * paso));
+  }
+
+  // ---------- cálculo + render ----------
+  function valor(o, mod, k) { const v = o[mod][k]; return v === undefined ? null : v; }
+  const alcanzable = v => v !== null && v < 1;
+
+  function mejorOpcion(o, mod) {
+    let best = null;
+    for (const k of INSTR) { const v = valor(o, mod, k); if (alcanzable(v) && (best === null || v < o[mod][best])) best = k; }
+    return best;
+  }
+
+  function lista(arr) {
+    if (arr.length <= 1) return arr.join('');
+    return arr.slice(0, -1).join(', ') + ' y ' + arr[arr.length - 1];
+  }
+
+  function textoAporte(o, mod, k) {
+    const v = valor(o, mod, k);
+    if (v === null) return null;
+    return { pct: v, ars: v * o.neto, usd: k === 'Inmobiliario' ? o[mod]._inm_usd : v * o.neto / MEP };
+  }
+
+  function render() {
+    const N = estado.neto;
+    const err = el('errorSueldo');
+    if (!(N >= MIN_R && N <= MAX_R)) {
+      err.textContent = isNaN(N)
+        ? 'Escribí un número (por ejemplo 1.000.000).'
+        : 'El sueldo neto tiene que estar entre ' + $(NETO_MIN) + ' (' + num(SMVM_MIN) + ' SMVM) y ' + $(NETO_MAX) + ' (' + num(SMVM_MAX) + ' SMVM). Fuera de ese rango no se calcula.';
+      err.classList.remove('oculto');
+      el('resultados').classList.add('oculto');
+      el('ayudaSueldo').textContent = '';
+      el('rNeto').textContent = 'fuera de rango'; el('rBrecha').textContent = '—'; el('rAporte').textContent = '—';
+      dibujarGrafico(null);
+      return;
+    }
+    err.classList.add('oculto');
+    el('resultados').classList.remove('oculto');
+
+    const o0 = M.calcular(N);
+    const mod = estado.mod, k = estado.instr;
+    const hayBrecha = o0.brecha > 0;
+    // Sensibilidad: reemplaza solo el aporte del instrumento elegido (mismas fórmulas con otro r)
+    const sens = estado.rSens !== null && financiero(k);
+    const o = sens && hayBrecha ? (() => {
+      const a = M.aporteConRendimiento(N, estado.rSens);
+      return { ...o0, A: { ...o0.A, [k]: a.A }, B: { ...o0.B, [k]: a.B } };
+    })() : o0;
+    renderSens(k);
+    renderEjemplos();
+    renderNivel(o);
+
+    el('ayudaSueldo').textContent = 'Bruto equivalente: ' + $(o.bruto) + ' · ' + num(o.bruto / P.smvm, 1) + ' SMVM · ' + usd(o.neto_usd) + ' al MEP';
+
+    // Tarjetas
+    el('cHaber').textContent = $(o.haber_neto);
+    el('cBrecha').textContent = $(o.brecha);
+    el('cBrechaD').textContent = hayBrecha ? usd(o.brecha_usd) + ' al MEP' : 'Sin brecha';
+    el('cBrechaPct').textContent = pct(o.brecha / o.neto);
+    el('cBrechaPctD').textContent = hayBrecha ? 'Lo que el haber no cubre' : 'El haber supera al neto';
+
+    el('cAporteEt').innerHTML = 'Aporte requerido · ' + esc(nombre(k)) + ' · Mod. ' + mod + (sens ? ' <span class="chip-sens">sensibilidad</span>' : '');
+    const ce = el('cAporteE');
+    if (!hayBrecha) {
+      el('cAporte').textContent = '—'; el('cAporteD').textContent = 'No hay brecha que cubrir'; ce.innerHTML = '';
+    } else {
+      const a = textoAporte(o, mod, k);
+      if (!a) {
+        el('cAporte').textContent = 'N/A';
+        el('cAporteD').textContent = 'Sin rendimiento positivo no hay intereses de los que vivir: solo aplica la modalidad B';
+        ce.innerHTML = '';
+      } else {
+        el('cAporte').innerHTML = pct(a.pct) + ' <small>del neto</small>';
+        el('cAporteD').textContent = $(a.ars) + ' por mes' + (k === 'Inmobiliario' ? ' (' + usd(a.usd, 2) + ')' : '') + ' durante ' + num(ANIOS_AP) + ' años';
+        ce.innerHTML = alcanzable(a.pct)
+          ? '<span class="estado"><i style="background:var(--good)"></i>✓ Alcanzable</span>'
+          : '<span class="estado"><i style="background:var(--serious)"></i>✕ No alcanzable</span>';
+      }
+    }
+
+    renderRelato(o);
+    renderComparador(o);
+    renderTabla(o);
+    dibujarGrafico(N);
+    dibujarFondo(N, o);
+    renderResumen(o);
+  }
+
+  function renderResumen(o) {
+    const k = estado.instr, a = o.brecha > 0 ? textoAporte(o, estado.mod, k) : null;
+    el('rNeto').textContent = $(o.neto);
+    el('rBrecha').textContent = o.brecha > 0 ? pct(o.brecha / o.neto) : 'sin brecha';
+    el('rAporteEt').textContent = nombre(k) + ' · ' + estado.mod + (estado.rSens !== null && financiero(k) ? ' (sens.)' : '');
+    el('rAporte').textContent = o.brecha > 0 ? (a ? pct(a.pct) : 'N/A') : '—';
+  }
+
+  function renderEjemplos() {
+    el('ejemplos').querySelectorAll('button').forEach(b => b.classList.toggle('activo', EJEMPLOS[+b.dataset.i].neto === estado.neto));
+  }
+
+  function renderSens(k) {
+    const fin = financiero(k);
+    el('sens').classList.toggle('oculto', !fin);
+    el('sensNo').classList.toggle('oculto', fin);
+    if (!fin) return;
+    const r = rElegido();
+    el('sensNom').textContent = nombre(k);
+    if (document.activeElement !== rend) rend.value = r;
+    el('rendVal').textContent = (r > 0 ? '+' : '') + pct(r, 2);
+    const b = el('rendBase');
+    b.textContent = 'Volver al valor base (' + pct(R[k], 2) + ')';
+    b.disabled = estado.rSens === null;
+    el('avisoSens').classList.toggle('oculto', estado.rSens === null);
+  }
+
+  // Barra "de dónde sale tu nivel de vida": sueldo neto = haber neto + brecha
+  function renderNivel(o) {
+    const fH = Math.min(1, o.haber_neto / o.neto), fB = o.brecha / o.neto;
+    let h = '<div class="haber" style="width:' + (fH * 100) + '%" title="Haber neto ' + $(o.haber_neto) + '">' + (fH >= 0.12 ? 'Haber ' + pct(fH, 0) : '') + '</div>';
+    if (o.brecha > 0) h += '<div class="brecha" style="width:' + (fB * 100) + '%" title="Brecha ' + $(o.brecha) + '">' + (fB >= 0.12 ? 'Brecha ' + pct(fB, 0) : '') + '</div>';
+    el('nivel').innerHTML = h;
+    el('nivel').querySelectorAll('div').forEach(d => { if (d.scrollWidth > d.clientWidth + 1) d.textContent = ''; });
+    el('nivelLey').innerHTML = o.brecha > 0
+      ? '<span><i style="background:var(--accent)"></i>Haber jubilatorio neto: <b>' + $(o.haber_neto) + '</b> (' + pct(fH) + ' del neto)</span>' +
+        '<span><i style="background:var(--brecha)"></i>Brecha a cubrir con ahorro propio: <b>' + $(o.brecha) + '</b> (' + pct(fB) + ')</span>' +
+        '<span style="color:var(--muted)">Total: sueldo neto de hoy ' + $(o.neto) + '</span>'
+      : '<span><i style="background:var(--accent)"></i>El haber jubilatorio neto (<b>' + $(o.haber_neto) + '</b>) cubre todo el sueldo neto de hoy (' + $(o.neto) + ') y lo supera en ' + $(o.haber_neto - o.neto) + '. No hay brecha.</span>';
+  }
+
+  function renderRelato(o) {
+    const mod = estado.mod, k = estado.instr, p = [];
+    p.push('Con un sueldo neto de <b>' + $(o.neto) + '</b>, según el modelo cobrarías una jubilación de <b>' + $(o.haber_neto) + '</b> por mes (neto de aportes al PAMI).');
+    if (o.brecha <= 0) {
+      p.push('Eso es el <b>' + pct(o.haber_neto / o.neto) + '</b> de lo que ganás hoy: el haber supera tu sueldo neto, así que <b>no hay brecha</b> que cubrir.');
+      p.push('Pasa en los sueldos bajos porque el haber tiene una suma fija (PBU) y un piso (haber mínimo de ' + $(P.hmin) + ').');
+    } else {
+      p.push('Eso es el <b>' + pct(o.haber_neto / o.neto) + '</b> de lo que ganás hoy. La brecha es de <b>' + $(o.brecha) + '</b> por mes.');
+      let porque = 'El haber tiene una suma fija (PBU) y un tope a la base imponible: por eso, cuanto más ganás, más grande es la brecha.';
+      if (o.bruto > P.tope) porque += ' Tu sueldo bruto (' + $(o.bruto) + ') supera el tope de ' + $(P.tope) + ': lo que ganás por encima no suma al haber.';
+      p.push(porque);
+
+      const txtMod = mod === 'B' ? 'B (consumir el capital en ' + num(J.anios_retiro, 1) + ' años)' : 'A (vivir de los intereses, sin tocar el capital)';
+      const a = textoAporte(o, mod, k);
+      let que = 'Para cubrirla necesitarías un fondo propio invertido en el mercado de capitales. ';
+      if (!a) {
+        que += 'En la modalidad ' + txtMod + ', el ' + nombre(k) + ' no sirve: sin rendimiento positivo no genera intereses.';
+      } else {
+        que += 'En la modalidad ' + txtMod + ', con <b>' + nombre(k) + '</b> tendrías que aportar <b>' + $(a.ars) + '</b> por mes (<b>' + pct(a.pct) + '</b> de tu salario neto) durante ' + num(ANIOS_AP) + ' años';
+        if (k === 'Inmobiliario') que += ' (' + usd(a.usd, 2) + ' por mes; ' + o[mod]._deptos + ' ' + (o[mod]._deptos === 1 ? 'unidad' : 'unidades') + ' al jubilarte)';
+        que += alcanzable(a.pct) ? '.' : ': es más que tu sueldo, <b>no es alcanzable</b>.';
+      }
+      if (estado.rSens !== null && financiero(k)) que += ' <span class="chip-sens">sensibilidad</span> Escenario hipotético con un rendimiento real de ' + pct(estado.rSens, 2) + ' anual (el caso base del trabajo usa ' + pct(R[k], 2) + ').';
+      p.push(que);
+
+      const best = mejorOpcion(o, mod);
+      const noAlc = INSTR.filter(x => { const v = valor(o, mod, x); return v !== null && v >= 1; }).map(nombre);
+      const na = INSTR.filter(x => valor(o, mod, x) === null).map(nombre);
+      let cierre = best
+        ? 'La opción más barata en esta modalidad es <b>' + nombre(best) + '</b> (' + pct(o[mod][best]) + ' del neto). '
+        : 'En esta modalidad <b>ninguna opción es alcanzable</b>. ';
+      if (noAlc.length) cierre += 'No ' + (noAlc.length === 1 ? 'es alcanzable' : 'son alcanzables') + ': ' + lista(noAlc) + '.';
+      else if (best) cierre += 'Todas las opciones con rendimiento son alcanzables.';
+      if (na.length) cierre += ' ' + lista(na) + ' no aplica en la modalidad A.';
+      p.push(cierre);
+    }
+    el('relato').innerHTML = p.map(t => '<p>' + t + '</p>').join('') +
+      '<p class="nota">Son resultados de un modelo con supuestos (rendimientos constantes, sin volatilidad), no una predicción ni asesoramiento financiero.</p>';
+  }
+
+  function renderComparador(o) {
+    const mod = estado.mod, hay = o.brecha > 0;
+    el('compTit').textContent = 'Aporte requerido por instrumento · Modalidad ' + mod;
+    el('compSub').textContent = hay ? 'Como % del sueldo neto, durante ' + num(ANIOS_AP) + ' años. Tocá una barra para elegir el instrumento. La hipótesis del trabajo se refiere a los perfiles moderado (MEGAQM) y agresivo (S&P 500), marcados con la franja azul.' : '';
+    el('compSinBrecha').classList.toggle('oculto', hay);
+    const cont = el('barras');
+    if (!hay) { cont.innerHTML = ''; return; }
+    const vals = INSTR.map(k => valor(o, mod, k)).filter(v => v !== null);
+    const escala = Math.max(1, ...vals) * 1.04;
+    const best = mejorOpcion(o, mod);
+    const x100 = 100 / escala;
+    let h = '';
+    INSTR.forEach((k, i) => {
+      const a = textoAporte(o, mod, k);
+      h += '<div class="fila' + (k === estado.instr ? ' sel' : '') + (HIPOTESIS[k] ? ' hip' : '') + '" data-k="' + k + '" role="button" tabindex="0">';
+      h += '<div class="nom">' + esc(nombre(k)) + (estado.rSens !== null && k === estado.instr && financiero(k) ? ' <span class="chip-sens">sens.</span>' : '') +
+        '<small>' + esc(PERFIL[k]) + (HIPOTESIS[k] ? ' · hipótesis' : '') + '</small></div><div class="pista">';
+      if (i === 0) h += '<div class="ref100" style="left:' + x100 + '%"><span>100% del neto</span></div>';
+      else h += '<div class="ref100" style="left:' + x100 + '%"></div>';
+      if (!a) {
+        h += '<div class="na">N/A · sin intereses (rendimiento ≤ 0)</div></div><div class="val"></div></div>';
+        return;
+      }
+      const ok = alcanzable(a.pct);
+      h += '<div class="barra' + (k === best ? ' mejor' : '') + '" style="width:' + (a.pct * 100 / escala) + '%;background:var(' + (ok ? '--good' : '--serious') + ')" title="' +
+        esc(nombre(k) + ': ' + pct(a.pct, 2) + ' del neto · ' + $(a.ars) + ' por mes' + (ok ? '' : ' · no alcanzable')) + '"></div></div>';
+      h += '<div class="val num"><b>' + pct(a.pct) + '</b> ' + (ok ? '✓' : '✕') + '<small>' + $(a.ars) + '/mes</small></div></div>';
+    });
+    cont.innerHTML = h;
+  }
+
+  function renderTabla(o) {
+    if (o.brecha <= 0) { el('tabla').innerHTML = '<p>No hay brecha: no se calculan aportes.</p>'; return; }
+    let h = '<table><thead><tr><th>Instrumento</th><th>Rend. real anual</th><th>Mod. B · % neto</th><th>Mod. B · $/mes</th><th>Mod. A · % neto</th><th>Mod. A · $/mes</th></tr></thead><tbody>';
+    INSTR.forEach(k => {
+      const r = (estado.rSens !== null && k === estado.instr && financiero(k)) ? estado.rSens : R[k];
+      h += '<tr><td>' + esc(nombre(k)) + ' <small style="color:var(--muted)">' + esc(PERFIL[k]) + '</small></td><td>' + (r === undefined ? 'simulación' : pct(r, 2) + (r !== R[k] ? ' (sens.)' : '')) + '</td>';
+      ['B', 'A'].forEach(m => {
+        const a = textoAporte(o, m, k);
+        if (!a) h += '<td>N/A</td><td>—</td>';
+        else h += '<td>' + pct(a.pct, 2) + (alcanzable(a.pct) ? '' : ' ✕') + '</td><td>' + $(a.ars) + '</td>';
+      });
+      h += '</tr>';
+    });
+    h += '</tbody></table><p class="ayuda">✕ = no alcanzable (aporte ≥ 100% del neto). Inmobiliario: ' +
+      'B ' + usd(o.B._inm_usd, 2) + '/mes (' + o.B._deptos + ' u. al jubilarte), A ' + usd(o.A._inm_usd, 2) + '/mes (' + o.A._deptos + ' u. necesarias).</p>';
+    el('tabla').innerHTML = h;
+  }
+
+  // ---------- gráfico de brecha (solo usa sistema(), que es instantáneo) ----------
+  // Los gráficos se dibujan al ancho real del contenedor (1 unidad SVG = 1 px), así el texto
+  // conserva su tamaño en el celular; se redibujan al cambiar el ancho de la pantalla.
+  function medir(cont, svg, hAncho, hAngosto) {
+    const w = Math.round(cont.clientWidth) || 720, h = w < 560 ? hAngosto : hAncho;
+    svg.setAttribute('viewBox', '0 0 ' + w + ' ' + h);
+    return [w, h];
+  }
+  let W = 720, H = 260;
+  const ml = 46, mr = 16, mt = 14, mb = 34;
+  // Después de dibujar: corre las etiquetas que se salen del dibujo y, si dos se pisan,
+  // oculta la de menor prioridad (marcas del eje) o mueve la etiqueta móvil (data-mover).
+  function acomodarEtiquetas(svg, ancho) {
+    const ts = [...svg.querySelectorAll('text')];
+    if (!ts.length || !ts[0].getBBox) return;
+    const caja = t => { try { return t.getBBox(); } catch (e) { return null; } };
+    ts.forEach(t => {
+      const b = caja(t); if (!b || !b.width) return;
+      // una etiqueta con data-giro que no entra a la derecha de su línea pasa a la izquierda
+      if (t.dataset.giro && b.x + b.width > ancho - 1) { t.setAttribute('text-anchor', 'end'); t.setAttribute('x', t.dataset.giro); return; }
+      let dx = 0;
+      if (b.x < 1) dx = 1 - b.x; else if (b.x + b.width > ancho - 1) dx = ancho - 1 - b.x - b.width;
+      if (dx) t.setAttribute('x', +t.getAttribute('x') + dx);
+    });
+    const pisa = (a, b) => a.x < b.x + b.width + 4 && b.x < a.x + a.width + 4 && a.y < b.y + b.height && b.y < a.y + a.height;
+    ts.forEach(t => {
+      if (!t.dataset.mover) return;
+      const otras = ts.filter(o => o !== t && o.style.display !== 'none').map(caja).filter(Boolean);
+      if (otras.some(o => pisa(caja(t), o))) t.setAttribute('y', +t.getAttribute('y') + 26);
+    });
+    const marcas = ts.filter(t => t.dataset.marca).sort((a, b) => caja(a).x - caja(b).x);
+    let ultima = null;
+    marcas.forEach(t => {
+      const b = caja(t);
+      if (ultima && b.x < ultima.x + ultima.width + 6) t.style.display = 'none'; else ultima = b;
+    });
+  }
+  const lx = Math.log(NETO_MIN), lX = Math.log(NETO_MAX);
+  const sx = n => ml + (Math.log(n) - lx) / (lX - lx) * (W - ml - mr);
+  const sy = f => mt + (1 - f) * (H - mt - mb);
+  const curva = [];
+  for (let i = 0; i <= 240; i++) {
+    const n = Math.exp(lx + (lX - lx) * i / 240), s = M.sistema(M.brutoDesdeNeto(n));
+    curva.push({ n: n, f: s.brecha / s.neto, b: s.brecha });
+  }
+  function dibujarGrafico(N) {
+    const svg = el('svg');
+    [W, H] = medir(el('graf'), svg, 260, 230);
+    const angosto = W < 480;
+    let g = '';
+    [0, 0.25, 0.5, 0.75, 1].forEach(f => {
+      g += '<line x1="' + ml + '" x2="' + (W - mr) + '" y1="' + sy(f) + '" y2="' + sy(f) + '" stroke="var(--grid)" stroke-width="1"/>';
+      g += '<text x="' + (ml - 6) + '" y="' + (sy(f) + 4) + '" text-anchor="end">' + num(f * 100) + '%</text>';
+    });
+    (angosto ? [1e6, 5e6, 2e7] : [5e5, 1e6, 2e6, 5e6, 1e7, 2e7]).forEach(n => {
+      if (n < NETO_MIN || n > NETO_MAX) return;
+      g += '<line x1="' + sx(n) + '" x2="' + sx(n) + '" y1="' + sy(0) + '" y2="' + (sy(0) + 4) + '" stroke="var(--muted)"/>';
+      g += '<text data-marca="1" x="' + sx(n) + '" y="' + (sy(0) + 17) + '" text-anchor="middle">$' + (n >= 1e6 ? num(n / 1e6) + ' M' : num(n / 1e3) + ' mil') + '</text>';
+    });
+    // referencia: neto en el tope de la base imponible
+    const xt = sx(NETO_TOPE);
+    g += '<line x1="' + xt + '" x2="' + xt + '" y1="' + mt + '" y2="' + sy(0) + '" stroke="var(--muted)" stroke-dasharray="3 3"/>';
+    g += '<text data-giro="' + (xt - 5) + '" x="' + (xt + 5) + '" y="' + (mt + 10) + '">' + (angosto ? 'tope imponible' : 'tope base imponible (neto ' + $(NETO_TOPE) + ')') + '</text>';
+    g += '<line x1="' + ml + '" x2="' + (W - mr) + '" y1="' + sy(0) + '" y2="' + sy(0) + '" stroke="var(--muted)"/>';
+    const d = curva.map((p, i) => (i ? 'L' : 'M') + sx(p.n).toFixed(1) + ' ' + sy(p.f).toFixed(1)).join(' ');
+    g += '<path d="' + d + '" fill="none" stroke="var(--accent)" stroke-width="2" stroke-linejoin="round"/>';
+    if (N !== null) {
+      const s = M.sistema(M.brutoDesdeNeto(N)), f = s.brecha / s.neto;
+      g += '<line x1="' + sx(N) + '" x2="' + sx(N) + '" y1="' + sy(f) + '" y2="' + sy(0) + '" stroke="var(--accent)" stroke-width="1" opacity=".5"/>';
+      g += '<circle cx="' + sx(N) + '" cy="' + sy(f) + '" r="5" fill="var(--accent)" stroke="var(--surface)" stroke-width="2"/>';
+      // la curva crece hacia la derecha: la etiqueta va arriba a la izquierda del punto (salvo en el borde izquierdo)
+      const ta = sx(N) < ml + 90 ? 'start' : 'end', dx = ta === 'end' ? -9 : 9;
+      g += '<text data-mover="1" x="' + (sx(N) + dx) + '" y="' + (sy(f) - 9) + '" text-anchor="' + ta + '" style="fill:var(--text);font-weight:600">Vos: ' + pct(f) + '</text>';
+    }
+    g += '<g id="hover"></g><rect x="' + ml + '" y="' + mt + '" width="' + (W - ml - mr) + '" height="' + (H - mt - mb) + '" fill="transparent" id="zona"/>';
+    svg.innerHTML = g;
+    acomodarEtiquetas(svg, W);
+  }
+  (function hover() {
+    const graf = el('graf'), tip = el('tip'), svg = el('svg');
+    const mover = e => {
+      if (e.target.id !== 'zona') return;
+      const r = svg.getBoundingClientRect(), k = W / r.width;
+      const x = (e.clientX - r.left) * k;
+      const n = Math.exp(lx + (x - ml) / (W - ml - mr) * (lX - lx));
+      if (n < NETO_MIN || n > NETO_MAX) return;
+      const s = M.sistema(M.brutoDesdeNeto(n)), f = s.brecha / s.neto;
+      el('hover').innerHTML = '<line x1="' + x + '" x2="' + x + '" y1="' + mt + '" y2="' + sy(0) + '" stroke="var(--muted)" stroke-width="1"/>' +
+        '<circle cx="' + x + '" cy="' + sy(f) + '" r="4" fill="var(--accent)" stroke="var(--surface)" stroke-width="2"/>';
+      tip.innerHTML = '<b>Neto ' + $(n) + '</b>Haber neto ' + $(s.haber_neto) + '<br>Brecha ' + $(s.brecha) + ' · ' + pct(f);
+      tip.style.display = 'block';
+      const px = (e.clientX - graf.getBoundingClientRect().left);
+      tip.style.left = Math.min(px + 12, graf.clientWidth - tip.offsetWidth - 4) + 'px';
+      tip.style.top = (sy(f) / k - 10) + 'px';
+    };
+    svg.addEventListener('pointermove', mover);
+    svg.addEventListener('pointerdown', mover);
+    // con el dedo, la ayuda queda visible hasta el próximo toque
+    svg.addEventListener('pointerleave', e => { if (e.pointerType === 'touch') return; tip.style.display = 'none'; const h = el('hover'); if (h) h.innerHTML = ''; });
+  })();
+
+  // ---------- evolución del fondo (instrumento elegido) ----------
+  let FW = 720, FH = 280;
+  let fml = 64;
+  const fmr = 16, fmt = 18, fmb = 34;
+  let fondoActual = null;
+  function pasoLindo(v) {
+    const raw = v / 4, mag = Math.pow(10, Math.floor(Math.log10(raw)));
+    return [1, 2, 2.5, 5, 10].find(m => m * mag >= raw) * mag;
+  }
+  const millones = v => '$' + (v >= 1e7 || v === 0 ? num(v / 1e6) : num(v / 1e6, 1)) + ' M';
+  function dibujarFondo(N, o) {
+    const mod = estado.mod, k = estado.instr, svg = el('svgFondo'), msg = el('fondoMsg');
+    el('fondoTit').textContent = 'Evolución del fondo · ' + nombre(k) + ' · Modalidad ' + mod;
+    fondoActual = null;
+    let serie = null, pasos = null, sub = '', nota = '';
+    if (o.brecha > 0) {
+      if (k === 'Inmobiliario') {
+        const t = M.trayectoriaInmob(N, mod);
+        pasos = t.pasos; serie = pasos.map(q => q.patrimonio * MEP);
+        sub = 'Patrimonio (efectivo + unidades × precio de ese mes), en pesos de hoy al MEP. Aporte de ' + usd(o[mod]._inm_usd, 2) + ' por mes durante ' + num(ANIOS_AP) + ' años; ' +
+          t.unidades_fin_acum + ' ' + (t.unidades_fin_acum === 1 ? 'unidad' : 'unidades') + ' al jubilarte.';
+        nota = mod === 'B'
+          ? 'Retiro: cada mes se usan los alquileres y el efectivo para cubrir la brecha de ' + usd(o.brecha_usd) + '; si no alcanza, se venden unidades (comisión ' + pct(J.inmobiliario.comision_venta, 0) + '). Los saltos son compras y ventas de unidades enteras.'
+          : 'Modalidad A: las unidades no se venden y su alquiler cubre la brecha. Para el gráfico se supone que el efectivo que quedó de la acumulación se sigue erosionando al mismo ritmo (' + pct(J.inmobiliario.decaimiento_mensual_efectivo, 2) + ' mensual); eso no cambia el aporte.';
+      } else {
+        const r = rElegido(), t = M.trayectoriaFondo(N, r, mod);
+        if (t) {
+          serie = t.saldo;
+          sub = 'Saldo en pesos de hoy con un rendimiento real de ' + pct(r, 2) + ' anual' + (estado.rSens !== null ? ' (sensibilidad)' : '') + '. Aporte de ' + $(t.ap) + ' por mes durante ' + num(ANIOS_AP) + ' años; al jubilarte el fondo tiene ' + $(t.S0) + '.';
+          nota = mod === 'B'
+            ? 'Retiro: se sacan ' + $(t.brecha) + ' por mes (la brecha) y el fondo llega a cero a los ' + num(J.anios_retiro, 1) + ' años.'
+            : 'Retiro: se sacan solo los intereses (' + $(t.brecha) + ' por mes, la brecha), así que el saldo queda constante.';
+        }
+      }
+    }
+    if (!serie) {
+      msg.querySelector('p').textContent = o.brecha > 0
+        ? 'En la modalidad A el fondo vive de los intereses: con un rendimiento real ≤ 0 no hay intereses, así que no hay gráfico. Probá la modalidad B.'
+        : 'No hay brecha: no hace falta armar un fondo.';
+      msg.classList.remove('oculto'); el('grafFondo').classList.add('oculto');
+      el('fondoSub').textContent = ''; el('fondoNota').textContent = '';
+      return;
+    }
+    msg.classList.add('oculto'); el('grafFondo').classList.remove('oculto');
+    [FW, FH] = medir(el('grafFondo'), svg, 280, 240);
+    el('fondoSub').textContent = sub; el('fondoNota').textContent = nota;
+    const n = serie.length - 1, vmax = Math.max(...serie), paso = pasoLindo(vmax || 1), ymax = Math.ceil((vmax || 1) / paso) * paso;
+    // margen izquierdo = ancho de la etiqueta más larga del eje vertical (medida con la letra real)
+    svg.innerHTML = '<text id="medida">' + millones(ymax) + '</text>';
+    const bm = svg.querySelector('#medida').getBBox ? svg.querySelector('#medida').getBBox() : null;
+    fml = Math.max(48, Math.ceil((bm && bm.width ? bm.width : 60) + 12));
+    const x = m => fml + m / n * (FW - fml - fmr), y = v => fmt + (1 - v / ymax) * (FH - fmt - fmb);
+    let g = '';
+    for (let v = 0; v <= ymax + 1e-6; v += paso) {
+      g += '<line x1="' + fml + '" x2="' + (FW - fmr) + '" y1="' + y(v) + '" y2="' + y(v) + '" stroke="var(--grid)"/>';
+      g += '<text x="' + (fml - 6) + '" y="' + (y(v) + 4) + '" text-anchor="end">' + millones(v) + '</text>';
+    }
+    const pasoA = FW < 480 ? 10 : 5;
+    for (let a = 0; a * 12 <= n; a += pasoA) g += '<text data-marca="1" x="' + x(a * 12) + '" y="' + (FH - fmb + 17) + '" text-anchor="' + (a ? 'middle' : 'start') + '">' + (a ? a : 'año 0') + '</text>';
+    const xj = x(J.meses_acumulacion);
+    g += '<line x1="' + xj + '" x2="' + xj + '" y1="' + fmt + '" y2="' + y(0) + '" stroke="var(--muted)" stroke-dasharray="3 3"/>';
+    g += '<text x="' + (xj + 5) + '" y="' + (fmt + 4) + '">jubilación</text>';
+    g += '<text x="' + (fml + 4) + '" y="' + (fmt + 4) + '">acumulación</text>';
+    const d = serie.map((v, m) => (m ? 'L' : 'M') + x(m).toFixed(1) + ' ' + y(v).toFixed(1)).join(' ');
+    g += '<path d="' + d + ' L' + x(n) + ' ' + y(0) + ' L' + x(0) + ' ' + y(0) + 'Z" fill="var(--accent)" opacity=".12"/>';
+    g += '<path d="' + d + '" fill="none" stroke="var(--accent)" stroke-width="2" stroke-linejoin="round"/>';
+    g += '<line x1="' + fml + '" x2="' + (FW - fmr) + '" y1="' + y(0) + '" y2="' + y(0) + '" stroke="var(--muted)"/>';
+    g += '<g id="hoverFondo"></g><rect x="' + fml + '" y="' + fmt + '" width="' + (FW - fml - fmr) + '" height="' + (FH - fmt - fmb) + '" fill="transparent" id="zonaFondo"/>';
+    svg.innerHTML = g;
+    acomodarEtiquetas(svg, FW);
+    fondoActual = { serie, pasos, x, y, n };
+  }
+  (function hoverFondo() {
+    const graf = el('grafFondo'), tip = el('tipFondo'), svg = el('svgFondo');
+    const mover = e => {
+      if (!fondoActual || e.target.id !== 'zonaFondo') return;
+      const f = fondoActual, r = svg.getBoundingClientRect(), esc2 = FW / r.width;
+      const m = Math.max(0, Math.min(f.n, Math.round(((e.clientX - r.left) * esc2 - fml) / (FW - fml - fmr) * f.n)));
+      const v = f.serie[m];
+      el('hoverFondo').innerHTML = '<line x1="' + f.x(m) + '" x2="' + f.x(m) + '" y1="' + fmt + '" y2="' + f.y(0) + '" stroke="var(--muted)"/>' +
+        '<circle cx="' + f.x(m) + '" cy="' + f.y(v) + '" r="4" fill="var(--accent)" stroke="var(--surface)" stroke-width="2"/>';
+      let t = '<b>Año ' + num(m / 12, 1) + ' (mes ' + m + ')</b>' + (m <= J.meses_acumulacion ? 'Acumulación' : 'Retiro') + ' · ' + $(v);
+      if (f.pasos) t += '<br>' + f.pasos[m].u + ' u. + efectivo ' + $(f.pasos[m].cash * MEP);
+      tip.innerHTML = t; tip.style.display = 'block';
+      const px = e.clientX - graf.getBoundingClientRect().left;
+      tip.style.left = Math.max(0, Math.min(px + 12, graf.clientWidth - tip.offsetWidth - 4)) + 'px';
+      tip.style.top = Math.max(0, f.y(v) / esc2 - 46) + 'px';
+    };
+    svg.addEventListener('pointermove', mover);
+    svg.addEventListener('pointerdown', mover);
+    svg.addEventListener('pointerleave', e => { if (e.pointerType === 'touch') return; tip.style.display = 'none'; const h = el('hoverFondo'); if (h) h.innerHTML = ''; });
+  })();
+
+  // ---------- pie: supuestos y parámetros ----------
+  const I = J.inmobiliario;
+  el('supuestos').innerHTML = [
+    'Alcance: empleado en relación de dependencia en el régimen general del SIPA, con aportes personales del ' + pct(P.aportes_pers, 0) + ' (11% jubilación, 3% obra social, 3% PAMI) y ' + num(P.anios) + ' años de aportes. Otras categorías de trabajadores no están contempladas.',
+    'Rendimientos reales anuales constantes, sin volatilidad (no hay simulación de Monte Carlo): ' + Object.keys(R).map(k => nombre(k) + ' ' + pct(R[k], 2)).join(' · ') + '.',
+    'Fondo propio: aportes durante ' + num(ANIOS_AP) + ' años (' + num(J.meses_acumulacion) + ' meses). Haber calculado con ' + num(P.anios) + ' años de aportes al sistema (PC/PAP = ' + pct(P.tasa_pc, 1) + ' × ' + num(P.anios) + ').',
+    'Retiro de ' + num(J.anios_retiro, 1) + ' años según la esperanza de vida de 2020 (modalidad B). En la modalidad A el capital no se consume.',
+    'MEGAQM tiene solo 5 años de historia.',
+    'Inmobiliario: fuera del Excel original. Se calcula con una simulación de compra y alquiler de unidades enteras (precio ' + usd(I.precio_depto_usd) + ', alquiler bruto ' + pct(I.rentabilidad_alquiler_bruta, 2) + ' anual, apreciación real ' + pct(I.apreciacion_real_anual, 2) + ' anual, costos de compra ' + pct(I.costos_compra, 0) + ', comisión de venta ' + pct(I.comision_venta, 0) + '). La modalidad B puede dar hasta 0,07 puntos de % por encima del Word.',
+    'Valores en pesos de ' + J.fecha_datos + ' (Res. ANSES 257/2026). Sin inflación futura ni cambios de ley. El dólar MEP (' + $(MEP) + ') solo se usa para mostrar montos en USD.',
+    'El sueldo neto se pasa a bruto invirtiendo el descuento de aportes personales del ' + pct(P.aportes_pers, 0) + ' sobre la base topeada.'
+  ].map(t => '<li>' + esc(t) + '</li>').join('');
+  el('params').innerHTML = [
+    ['SMVM', $(P.smvm)], ['PBU', '$' + num(P.pbu, 2)], ['Tope base imponible', '$' + num(P.tope, 2)],
+    ['Haber mínimo', '$' + num(P.hmin, 2)], ['Haber máximo', '$' + num(P.hmax, 2)],
+    ['Aportes personales', pct(P.aportes_pers, 0)], ['PAMI jubilado', pct(P.pami_hasta_hmin, 0) + ' hasta el mínimo, ' + pct(P.pami_exceso, 0) + ' excedente'],
+    ['Dólar MEP', '$' + num(MEP, 2)], ['Datos', J.fecha_datos]
+  ].map(r => '<div><span>' + esc(r[0]) + '</span><span>' + esc(r[1]) + '</span></div>').join('');
+
+  // ---------- eventos ----------
+  function desdeInput() { estado.neto = parsear(inp.value); if (estado.neto >= MIN_R && estado.neto <= MAX_R) desliz.value = aDesliz(estado.neto); render(); }
+  inp.addEventListener('input', desdeInput);
+  inp.addEventListener('blur', () => { if (!isNaN(estado.neto)) inp.value = num(estado.neto, estado.neto % 1 ? 2 : 0); });
+  desliz.addEventListener('input', () => { estado.neto = desdeDesliz(desliz.value); inp.value = num(estado.neto); render(); });
+  document.querySelectorAll('input[name=mod]').forEach(r => r.addEventListener('change', () => { estado.mod = r.value; render(); }));
+  sel.addEventListener('change', () => { estado.instr = sel.value; estado.rSens = null; render(); });
+  el('ejemplos').addEventListener('click', e => {
+    const b = e.target.closest('button'); if (!b) return;
+    estado.neto = EJEMPLOS[+b.dataset.i].neto; inp.value = num(estado.neto); desliz.value = aDesliz(estado.neto); render();
+  });
+  rend.addEventListener('input', () => { estado.rSens = parseFloat(rend.value); render(); });
+  el('rendBase').addEventListener('click', () => { estado.rSens = null; rend.value = R[estado.instr]; render(); });
+  function elegir(t) { const f = t.closest('.fila'); if (f) { if (f.dataset.k !== estado.instr) estado.rSens = null; estado.instr = f.dataset.k; sel.value = f.dataset.k; render(); } }
+  el('barras').addEventListener('click', e => elegir(e.target));
+  el('barras').addEventListener('keydown', e => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); elegir(e.target); } });
+
+  sel.value = estado.instr;
+  let anchoPrevio = window.innerWidth, pendiente = false;
+  window.addEventListener('resize', () => {
+    if (window.innerWidth === anchoPrevio || pendiente) return;   // el alto cambia al mostrar/ocultar la barra del navegador
+    pendiente = true;
+    requestAnimationFrame(() => { pendiente = false; anchoPrevio = window.innerWidth; render(); });
+  });
+  el('resumen').addEventListener('click', () => {
+    el('secEntradas').scrollIntoView({ behavior: matchMedia('(prefers-reduced-motion: reduce)').matches ? 'auto' : 'smooth' });
+  });
+  if ('IntersectionObserver' in window) {
+    new IntersectionObserver(es => el('resumen').classList.toggle('visible', !es[0].isIntersecting && el('errorSueldo').classList.contains('oculto')))
+      .observe(el('secEntradas'));
+  }
+
+  desdeInput();
+})();
+</script>
+</body>
+</html>
