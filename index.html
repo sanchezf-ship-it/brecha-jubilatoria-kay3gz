@@ -265,7 +265,7 @@ footer .param div { display: flex; justify-content: space-between; border-bottom
   .nivel-ley span { display: block; }
   .nivel-ley i { margin-right: 6px; vertical-align: -1px; }
 
-  /* Comparador: nombre arriba y, debajo, una fila por modalidad (B y A) con ancho fijo para el valor */
+  /* Comparador: nombre arriba y, debajo, una fila por modalidad (A y B) con ancho fijo para el valor */
   .comp-eje, .grupo { grid-template-columns: minmax(0, 1fr); }
   .grupo .nom { grid-row: auto; text-align: left; font-size: 15px; padding: 2px 6px 4px; }
   /* en el celular el valor va debajo de la barra, así la barra usa todo el ancho */
@@ -319,7 +319,7 @@ footer .param div { display: flex; justify-content: space-between; border-bottom
   </button>
   <header>
     <h1>¿Cuánto te va a faltar cuando te jubiles?</h1>
-    <p class="sub">Brecha entre el haber jubilatorio y el sueldo neto, y cuánto habría que ahorrar para cubrirla.</p>
+    <p class="sub">Brecha entre el haber jubilatorio y el sueldo neto, y cuánto habría que invertir para cubrirla.</p>
     <span class="aviso">Herramienta de apoyo para el TFG · Resultados de un modelo con supuestos · No es asesoramiento financiero</span>
   </header>
 
@@ -339,8 +339,8 @@ footer .param div { display: flex; justify-content: space-between; border-bottom
       <div class="e-mod">
         <span class="t">Modalidad para el detalle</span>
         <div class="seg" role="radiogroup">
-          <label><input type="radio" name="mod" value="B" checked><span><b>B · Consumir el capital</b><small id="txtModB"></small></span></label>
-          <label><input type="radio" name="mod" value="A"><span><b>A · Vivir de los intereses</b><small>El capital queda intacto</small></span></label>
+          <label><input type="radio" name="mod" value="A" checked><span><b>A · Vivir de los intereses</b><small>El capital queda intacto</small></span></label>
+          <label><input type="radio" name="mod" value="B"><span><b>B · Consumir el capital</b><small id="txtModB"></small></span></label>
         </div>
       </div>
       <div class="e-instr">
@@ -396,8 +396,8 @@ footer .param div { display: flex; justify-content: space-between; border-bottom
       <div class="comp-cab">
         <h2 id="compTit" style="margin:0">Aporte requerido por instrumento</h2>
         <div class="leyenda">
-          <span><i class="modB-ley"></i><span><b>B</b> · consumir el capital en <span id="leyAnios"></span> años</span></span>
           <span><i class="modA-ley"></i><span><b>A</b> · vivir de los intereses (el capital queda intacto)</span></span>
+          <span><i class="modB-ley"></i><span><b>B</b> · consumir el capital en <span id="leyAnios"></span> años</span></span>
         </div>
         <div class="leyenda">
           <span><i style="background:var(--good)"></i>✓ Alcanzable</span>
@@ -1003,7 +1003,7 @@ const PARAMETROS = {
   INSTR.forEach(k => { const o = document.createElement('option'); o.value = k; o.textContent = nombre(k) + ' · ' + PERFIL[k]; sel.appendChild(o); });
   el('txtModB').textContent = 'Se agota en ' + num(J.anios_retiro, 1) + ' años';
 
-  const estado = { neto: 1000000, mod: 'B', instr: 'SP500', rSens: null };  // rSens = null: rendimiento base del JSON
+  const estado = { neto: 1000000, mod: 'A', instr: 'SP500', rSens: null };  // rSens = null: rendimiento base del JSON
 
   // Personas de ejemplo: neto de n SMVM según sistema(), redondeado
   const EJEMPLOS = [['Sueldo mínimo', 1], ['3 SMVM', 3], ['10 SMVM', 10], ['20 SMVM', 20]]
@@ -1139,7 +1139,7 @@ const PARAMETROS = {
     el('nivel').querySelectorAll('div').forEach(d => { if (d.scrollWidth > d.clientWidth + 1) d.textContent = ''; });
     el('nivelLey').innerHTML = o.brecha > 0
       ? '<span><i style="background:var(--accent)"></i>Haber jubilatorio neto: <b>' + $(o.haber_neto) + '</b> (' + pct(fH) + ' del neto)</span>' +
-        '<span><i style="background:var(--brecha)"></i>Brecha a cubrir con ahorro propio: <b>' + $(o.brecha) + '</b> (' + pct(fB) + ')</span>' +
+        '<span><i style="background:var(--brecha)"></i>Brecha a cubrir con inversión propia: <b>' + $(o.brecha) + '</b> (' + pct(fB) + ')</span>' +
         '<span style="color:var(--muted)">Total: sueldo neto de hoy ' + $(o.neto) + '</span>'
       : '<span><i style="background:var(--accent)"></i>El haber jubilatorio neto (<b>' + $(o.haber_neto) + '</b>) cubre todo el sueldo neto de hoy (' + $(o.neto) + ') y lo supera en ' + $(o.haber_neto - o.neto) + '. No hay brecha.</span>';
   }
@@ -1159,7 +1159,8 @@ const PARAMETROS = {
     const a = textoAporte(o, mod, k), m = ' (modalidad ' + mod + ')';
     let txt;
     if (!a) txt = falta + ' Con ' + esc(nombre(k)) + ' no se puede vivir de los intereses' + m + ': sin rendimiento positivo no genera intereses.';
-    else if (alcanzable(a.pct)) txt = falta + ' Para cubrirlo, tendrías que ahorrar ' + $(a.ars) + ' por mes con ' + esc(nombre(k)) + m + '.';
+    // el aporte se invierte; el Colchón USD es la excepción: son dólares guardados, que en rigor se ahorran
+    else if (alcanzable(a.pct)) txt = falta + ' Para cubrirlo, tendrías que ' + (k === 'Colchon' ? 'ahorrar ' : 'invertir ') + $(a.ars) + ' por mes con ' + esc(nombre(k)) + m + '.';
     else txt = falta + ' Con ' + esc(nombre(k)) + m + ' el aporte supera tu sueldo: no es alcanzable.';
     t.className = 'titular';
     t.innerHTML = txt + chip;
@@ -1230,23 +1231,23 @@ const PARAMETROS = {
       '<p class="nota">Son resultados de un modelo con supuestos (rendimientos constantes, sin volatilidad), no una predicción ni asesoramiento financiero.</p>';
   }
 
-  // Comparador: para cada instrumento, una barra por modalidad (B y A). La pista completa es el
+  // Comparador: para cada instrumento, una barra por modalidad (A y B). La pista completa es el
   // 100% del sueldo neto; si el aporte lo supera, la barra se llena, se corta y se indica "×n del neto".
   function renderComparador(o) {
     const hay = o.brecha > 0;
-    el('compTit').textContent = 'Aporte requerido por instrumento · Modalidades B y A';
+    el('compTit').textContent = 'Aporte requerido por instrumento · Modalidades A y B';
     el('compSub').textContent = hay ? 'Como % del sueldo neto, durante ' + num(ANIOS_AP) + ' años. El ancho completo de cada barra es el 100% del sueldo neto. Tocá una barra para elegir el instrumento y la modalidad del detalle. La hipótesis del trabajo se refiere a los perfiles moderado (MEGAQM) y agresivo (S&P 500), marcados con la franja azul.' : '';
     el('compSinBrecha').classList.toggle('oculto', hay);
     const cont = el('barras');
     if (!hay) { cont.innerHTML = ''; el('inmDet').textContent = ''; return; }
-    const best = { B: mejorOpcion(o, 'B'), A: mejorOpcion(o, 'A') };
+    const best = { A: mejorOpcion(o, 'A'), B: mejorOpcion(o, 'B') };
     let h = '<div class="comp-eje" aria-hidden="true"><div></div><div class="ejeb"><span></span><span class="esc num"><span>0%</span><span>100% del neto</span></span><span></span></div></div>';
     INSTR.forEach(k => {
       const sensK = estado.rSens !== null && k === estado.instr && financiero(k);
       h += '<div class="grupo' + (k === estado.instr ? ' sel' : '') + (HIPOTESIS[k] ? ' hip' : '') + '">';
       h += '<div class="nom">' + esc(nombre(k)) + (sensK ? ' <span class="chip-sens">sens.</span>' : '') +
         '<small>' + esc(PERFIL[k]) + (HIPOTESIS[k] ? ' · hipótesis' : '') + '</small></div>';
-      ['B', 'A'].forEach(m => {
+      ['A', 'B'].forEach(m => {
         const a = textoAporte(o, m, k), elegida = k === estado.instr && m === estado.mod;
         const desc = nombre(k) + ', modalidad ' + m + ': ';
         if (!a) {
@@ -1268,8 +1269,8 @@ const PARAMETROS = {
     cont.innerHTML = h;
     // detalle del Inmobiliario en las dos modalidades
     const uni = n => n + ' ' + (n === 1 ? 'unidad' : 'unidades');
-    el('inmDet').textContent = 'Inmobiliario · B: ' + usd(o.B._inm_usd, 2) + ' por mes, ' + uni(o.B._deptos) + ' al jubilarte' +
-      ' · A: ' + usd(o.A._inm_usd, 2) + ' por mes, ' + uni(o.A._deptos) + (o.A._deptos === 1 ? ' necesaria' : ' necesarias') + '.';
+    el('inmDet').textContent = 'Inmobiliario · A: ' + usd(o.A._inm_usd, 2) + ' por mes, ' + uni(o.A._deptos) + (o.A._deptos === 1 ? ' necesaria' : ' necesarias') +
+      ' · B: ' + usd(o.B._inm_usd, 2) + ' por mes, ' + uni(o.B._deptos) + ' al jubilarte.';
   }
 
   // ---------- utilidades de gráficos ----------
@@ -1422,7 +1423,7 @@ const PARAMETROS = {
     'Alcance: empleado en relación de dependencia en el régimen general del SIPA, con aportes personales del ' + pct(P.aportes_pers, 0) + ' (11% jubilación, 3% obra social, 3% PAMI) y ' + num(P.anios) + ' años de aportes. Otras categorías de trabajadores no están contempladas.',
     'Rendimientos reales anuales constantes, sin volatilidad (no hay simulación de Monte Carlo): ' + Object.keys(R).map(k => nombre(k) + ' ' + pct(R[k], 2)).join(' · ') + '.',
     'Fondo propio: aportes durante ' + num(ANIOS_AP) + ' años (' + num(J.meses_acumulacion) + ' meses). Haber calculado con ' + num(P.anios) + ' años de aportes al sistema (PC/PAP = ' + pct(P.tasa_pc, 1) + ' × ' + num(P.anios) + ').',
-    'Retiro de ' + num(J.anios_retiro, 1) + ' años según la esperanza de vida de 2020 (modalidad B). En la modalidad A el capital no se consume.',
+    'En la modalidad A el capital no se consume. En la modalidad B, el retiro dura ' + num(J.anios_retiro, 1) + ' años según la esperanza de vida de 2020.',
     'MEGAQM tiene solo 5 años de historia.',
     'Inmobiliario: fuera del Excel original. Se calcula con una simulación de compra y alquiler de unidades enteras (precio ' + usd(I.precio_depto_usd) + ', alquiler bruto ' + pct(I.rentabilidad_alquiler_bruta, 2) + ' anual, apreciación real ' + pct(I.apreciacion_real_anual, 2) + ' anual, costos de compra ' + pct(I.costos_compra, 0) + ', comisión de venta ' + pct(I.comision_venta, 0) + '). La modalidad B puede dar hasta 0,07 puntos de % por encima del Word.',
     'Valores en pesos de ' + J.fecha_datos + ' (Res. ANSES 257/2026). Sin inflación futura ni cambios de ley. El dólar MEP (' + $(MEP) + ') solo se usa para mostrar montos en USD.',
