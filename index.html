@@ -116,23 +116,21 @@ header h1 { font-size: 20px; margin: 0; color: var(--ink-2); font-weight: 700; l
    ahorros). Pista fija al 150% del sueldo; la línea negra es el 100% (todo tu sueldo). */
 .comp .sub { margin: -6px 0 10px; }
 .comp-ley { font-size: 16px; margin: 0 0 12px; }
-.comp-ley i.mA, .pista .b.mA { background-image: repeating-linear-gradient(135deg, rgba(255,255,255,.5) 0 4px, transparent 4px 8px); }
-.comp-ley i.mB, .comp-ley i.mA { background-color: var(--ahorro); }
+.comp-ley i.ok { background-color: var(--ahorro); }
 .comp-eje { display: grid; grid-template-columns: 230px minmax(0, 1fr) 230px; gap: 14px; align-items: center; padding: 0 10px; font-size: 14px; color: var(--muted); height: 26px; }
 .comp-eje .pista { height: 26px; }
 .comp-eje .marca100 { position: absolute; top: 0; transform: translateX(-50%); white-space: nowrap; font-weight: 700; color: var(--ink-2); font-size: 15px; }
-.lista { position: relative; --fila: 86px; transition: height .3s ease; }
+.lista { position: relative; --fila: 74px; transition: height .3s ease; }
 .comp-fila { position: absolute; left: 0; right: 0; height: var(--fila); padding: 0 8px; border-radius: 10px; display: grid; grid-template-columns: 230px minmax(0, 1fr); gap: 14px; align-items: center;
   transition: transform .45s cubic-bezier(.2,.7,.2,1), background-color .2s; border: 2px solid transparent; }
 .comp-fila.sel { border-color: var(--ink); background: var(--soft); }
 .comp-nom { min-width: 0; font-size: 17px; line-height: 1.25; }
 .comp-nom b { display: block; }
 .comp-nom small { display: block; font-size: 14px; color: var(--muted); }
-.comp-mods { display: grid; gap: 4px; min-width: 0; }
 .comp-m { display: grid; grid-template-columns: minmax(0, 1fr) 230px; gap: 14px; align-items: center; cursor: pointer; border-radius: 6px; padding: 2px 0; }
 .comp-m:hover .comp-val b { text-decoration: underline; }
 .comp-m:focus-visible { outline: 3px solid var(--ink); outline-offset: 1px; }
-.pista { position: relative; height: 24px; }
+.pista { position: relative; height: 28px; }
 .pista .tr { position: absolute; inset: 0; background: var(--soft); border-radius: 5px; }
 .comp-fila.sel .pista .tr { background: var(--card); }
 .pista .b { position: absolute; left: 0; top: 0; bottom: 0; background-color: var(--ahorro); border-radius: 5px; min-width: 4px;
@@ -141,11 +139,9 @@ header h1 { font-size: 20px; margin: 0; color: var(--ink-2); font-weight: 700; l
 .pista .b.corte { border-radius: 5px 0 0 5px; clip-path: polygon(0 0, calc(100% - 12px) 0, 100% 25%, calc(100% - 12px) 50%, 100% 75%, calc(100% - 12px) 100%, 0 100%); }
 .pista .l100 { position: absolute; top: -5px; bottom: -5px; width: 0; border-left: 3px solid var(--ink); }
 .comp-val { font-size: 15px; line-height: 1.2; min-width: 0; white-space: nowrap; }
-.comp-val b { font-size: 17px; }
+.comp-val b { font-size: 19px; }
 .comp-val small { color: var(--ink-2); margin-left: 4px; }
 .comp-m.no .comp-val b { color: var(--ink-2); }
-.comp-m.selm .comp-val b { font-size: 19px; }
-.comp-m.selm .comp-val::before { content: "◀ "; font-size: 12px; vertical-align: 2px; }
 .mejor-tag { display: none; font-size: 12px; font-weight: 800; color: #fff; background: var(--ahorro); border-radius: 999px; padding: 1px 8px; margin-left: 6px; vertical-align: 2px; white-space: nowrap; }
 .comp-m.mejor .mejor-tag { display: inline-block; }
 .na-txt { position: absolute; inset: 0; display: flex; align-items: center; padding-left: 10px; font-size: 15px; color: var(--muted); font-style: italic; }
@@ -225,7 +221,7 @@ footer p { margin: 2px 0; }
   .comp-fila { grid-template-columns: 170px minmax(0, 1fr); gap: 10px; }
   .comp-m { grid-template-columns: minmax(0, 1fr) 190px; gap: 10px; }
   .comp-val small { display: block; margin-left: 0; }
-  .lista { --fila: 104px; }
+  .lista { --fila: 82px; }
   .cob-fila { grid-template-columns: 220px minmax(0, 1fr) 160px; }
 }
 /* ===== Celular ===== */
@@ -250,14 +246,13 @@ footer p { margin: 2px 0; }
   .instr-grid { grid-template-columns: 1fr; }
   .comp-eje { grid-template-columns: minmax(0, 1fr) 118px; gap: 8px; }
   .comp-eje > div:first-child { display: none; }
-  .lista { --fila: 132px; }
+  .lista { --fila: 80px; }
   .comp-fila { grid-template-columns: minmax(0, 1fr); gap: 4px; align-content: center; }
   .comp-nom small { display: none; }
   .comp-m { grid-template-columns: minmax(0, 1fr) 118px; gap: 8px; }
   .comp-val { font-size: 14px; }
   .comp-val small { font-size: 13px; }
-  .comp-m.selm .comp-val::before { content: none; }
-  .comp-ley { flex-direction: column; font-size: 15px; }
+  .comp-ley { font-size: 15px; }
   .cob-fila { grid-template-columns: minmax(0, 1fr) auto; grid-template-areas: "nom monto" "bar bar"; gap: 6px 10px; }
   .cob-nom { grid-area: nom; } .cob-monto { grid-area: monto; } .cob-fila .barra100 { grid-area: bar; }
   details.detalle > summary { padding: 16px; font-size: 18px; flex-wrap: wrap; }
@@ -351,8 +346,7 @@ footer p { margin: 2px 0; }
     <h2 id="compTit">¿Cuánto de tu sueldo tendrías que separar para cubrirlo?</h2>
     <p class="sub" id="compSub"></p>
     <div class="ley comp-ley" aria-hidden="true">
-      <span><i class="mB"></i><span id="leyB"></span></span>
-      <span><i class="mA"></i>Si querés que tus ahorros duren para siempre</span>
+      <span><i class="ok"></i>Lo que tendrías que separar</span>
       <span><i style="background:var(--no)"></i>No alcanza: más que todo tu sueldo</span>
       <span><span class="mejor-tag" style="display:inline-block;margin:0">★</span>La que menos te pide</span>
     </div>
@@ -1125,64 +1119,61 @@ const PARAMETROS = {
     el('solProp').textContent = deCada100(v);
   }
 
-  // Gráfico de alternativas: una fila por opción y, dentro, una barra por cada forma de usar los
-  // ahorros (B arriba, A abajo). Ordenadas de menor a mayor esfuerzo en B, que siempre existe, así
-  // el orden no cambia al elegir qué hacer con los ahorros. Las filas se reutilizan y se mueven con
-  // una transición, así se ve cómo cambian al mover el sueldo.
-  const MODS = ['B', 'A'];
+  // Gráfico de alternativas: una fila por opción con una sola barra, la de la forma de usar los
+  // ahorros elegida arriba. Ordenadas de menor a mayor esfuerzo (las que no aplican, al final).
+  // Las filas se reutilizan y se mueven con una transición, así se ve cómo cambian al mover el
+  // sueldo o al cambiar la elección.
   const MOD_CORTO = { B: 'hasta gastarlos', A: 'para siempre' };
   const filas = {};
   INSTR.forEach(k => {
     const f = document.createElement('div');
     f.className = 'comp-fila'; f.dataset.k = k;
-    f.innerHTML = '<div class="comp-nom"><b>' + esc(OPC[k].nom) + '</b><small>' + esc(OPC[k].desc) + '</small></div><div class="comp-mods">' +
-      MODS.map(m => '<div class="comp-m" data-m="' + m + '" role="button" tabindex="0">' +
-        '<div class="pista"><div class="tr"></div><div class="b' + (m === 'A' ? ' mA' : '') + '"></div><div class="na-txt oculto"></div><div class="l100" style="left:' + (100 / ESCALA) + '%"></div></div>' +
-        '<div class="comp-val num"><b></b><span class="mejor-tag" title="La que menos te pide">★</span><small></small></div></div>').join('') + '</div>';
+    f.innerHTML = '<div class="comp-nom"><b>' + esc(OPC[k].nom) + '</b><small>' + esc(OPC[k].desc) + '</small></div>' +
+      '<div class="comp-m" role="button" tabindex="0">' +
+      '<div class="pista"><div class="tr"></div><div class="b"></div><div class="na-txt oculto"></div><div class="l100" style="left:' + (100 / ESCALA) + '%"></div></div>' +
+      '<div class="comp-val num"><b></b><span class="mejor-tag" title="La que menos te pide">★</span><small></small></div></div>';
     filas[k] = f; el('lista').appendChild(f);
   });
   el('marca100').style.left = (100 / ESCALA) + '%';
-  el('leyB').textContent = 'Si usás tus ahorros hasta gastarlos (unos ' + num(Math.round(J.anios_retiro)) + ' años)';
-  function alturaFila() { return parseFloat(getComputedStyle(el('lista')).getPropertyValue('--fila')) || 86; }
+  function alturaFila() { return parseFloat(getComputedStyle(el('lista')).getPropertyValue('--fila')) || 64; }
 
   function renderComparacion(o) {
-    const hay = o.brecha > 0;
+    const hay = o.brecha > 0, m = estado.mod;
     el('comp').classList.toggle('oculto', !hay);
     if (!hay) return;
-    el('compSub').textContent = 'Cada barra es cuánto de tu sueldo de hoy tendrías que separar por mes, durante ' + num(ANIOS_AP) +
-      ' años, con cada opción. La línea negra es todo tu sueldo. Tocá una barra para elegirla.';
-    const best = { A: mejorOpcion(o, 'A'), B: mejorOpcion(o, 'B') };
-    const orden = INSTR.slice().sort((a, b) => valor(o, 'B', a) - valor(o, 'B', b));
+    el('compSub').textContent = (m === 'A' ? 'Si querés que tus ahorros duren para siempre' : 'Si usás tus ahorros hasta gastarlos (en unos ' + num(Math.round(J.anios_retiro)) + ' años)') +
+      ': cuánto de tu sueldo de hoy tendrías que separar por mes, durante ' + num(ANIOS_AP) + ' años, con cada opción. La línea negra es todo tu sueldo. Tocá una barra para elegirla.';
+    const best = mejorOpcion(o, m);
+    const orden = INSTR.slice().sort((a, b) => {
+      const va = valor(o, m, a), vb = valor(o, m, b);
+      if (va === null) return 1; if (vb === null) return -1; return va - vb;
+    });
     const h = alturaFila();
     el('lista').style.height = (orden.length * h) + 'px';
     orden.forEach((k, i) => {
-      const f = filas[k];
+      const f = filas[k], c = f.querySelector('.comp-m'), v = valor(o, m, k);
+      const b = c.querySelector('.b'), na = c.querySelector('.na-txt');
+      const vb = c.querySelector('.comp-val b'), vs = c.querySelector('.comp-val small');
       f.style.transform = 'translateY(' + (i * h) + 'px)';
       f.classList.toggle('sel', k === estado.instr);
-      MODS.forEach(m => {
-        const c = f.querySelector('.comp-m[data-m="' + m + '"]'), v = valor(o, m, k);
-        const b = c.querySelector('.b'), na = c.querySelector('.na-txt');
-        const vb = c.querySelector('.comp-val b'), vs = c.querySelector('.comp-val small');
-        const elegida = k === estado.instr && m === estado.mod;
-        c.classList.toggle('selm', elegida);
-        c.classList.toggle('mejor', k === best[m]);
-        c.setAttribute('aria-pressed', elegida);
-        if (v === null) {
-          c.classList.add('no'); b.style.width = '0'; b.classList.add('oculto');
-          na.classList.remove('oculto'); na.textContent = 'para siempre: no se puede, no rinde nada';
-          vb.textContent = '—'; vs.textContent = 'no aplica';
-          c.setAttribute('aria-label', OPC[k].nom + ', ' + MOD_CORTO[m] + ': no se puede, no rinde nada');
-          return;
-        }
-        const ok = alcanzable(v);
-        b.classList.remove('oculto'); na.classList.add('oculto');
-        c.classList.toggle('no', !ok);
-        b.style.width = (Math.min(v, ESCALA) / ESCALA * 100) + '%';
-        b.classList.toggle('corte', v > ESCALA);
-        vb.textContent = pct(v);
-        vs.textContent = ok ? $(v * o.neto) + '/mes' : 'no alcanza';
-        c.setAttribute('aria-label', OPC[k].nom + ', ' + MOD_CORTO[m] + ': ' + pct(v) + ' del sueldo, ' + $(v * o.neto) + ' por mes' + (ok ? '' : ', no alcanza') + (k === best[m] ? ', la mejor' : ''));
-      });
+      c.dataset.m = m;
+      c.classList.toggle('mejor', k === best);
+      c.setAttribute('aria-pressed', k === estado.instr);
+      if (v === null) {
+        c.classList.add('no'); b.style.width = '0'; b.classList.add('oculto');
+        na.classList.remove('oculto'); na.textContent = 'no se puede: no rinde nada';
+        vb.textContent = '—'; vs.textContent = 'no aplica';
+        c.setAttribute('aria-label', OPC[k].nom + ', ' + MOD_CORTO[m] + ': no se puede, no rinde nada');
+        return;
+      }
+      const ok = alcanzable(v);
+      b.classList.remove('oculto'); na.classList.add('oculto');
+      c.classList.toggle('no', !ok);
+      b.style.width = (Math.min(v, ESCALA) / ESCALA * 100) + '%';
+      b.classList.toggle('corte', v > ESCALA);
+      vb.textContent = pct(v);
+      vs.textContent = ok ? $(v * o.neto) + '/mes' : 'no alcanza';
+      c.setAttribute('aria-label', OPC[k].nom + ', ' + MOD_CORTO[m] + ': ' + pct(v) + ' del sueldo, ' + $(v * o.neto) + ' por mes' + (ok ? '' : ', no alcanza') + (k === best ? ', la mejor' : ''));
     });
   }
 
