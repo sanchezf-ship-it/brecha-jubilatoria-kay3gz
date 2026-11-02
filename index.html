@@ -36,6 +36,9 @@ body {
 main { max-width: 1120px; margin: 0 auto; padding: 20px 24px 48px; }
 .num { font-variant-numeric: tabular-nums; }
 .oculto { display: none !important; }
+/* Sin un monto válido en la casilla, los resultados quedan atenuados */
+main > .card, main > .detalle { transition: opacity .2s; }
+main.sin-monto > .card:not(#cardSueldo), main.sin-monto > .detalle { opacity: .3; pointer-events: none; }
 button { font: inherit; color: inherit; }
 
 /* Encabezado */
@@ -278,7 +281,7 @@ footer p { margin: 2px 0; }
   </header>
 
   <!-- 1. Una sola pregunta -->
-  <section class="card" aria-labelledby="pSueldo">
+  <section class="card" id="cardSueldo" aria-labelledby="pSueldo">
     <h2 class="preg" id="pSueldo">¿Cuánto cobrás por mes, en mano?<button type="button" class="q" data-q="enmano" aria-label="Qué quiere decir en mano">?</button></h2>
     <div class="sueldo-ctl">
       <div class="rango">
@@ -286,7 +289,7 @@ footer p { margin: 2px 0; }
         <div class="rango-ext num"><span id="extMin"></span><span id="extMax"></span></div>
       </div>
       <label class="casilla" aria-label="Sueldo por mes, en mano (escribí el monto)">
-        <span>$</span><input id="casilla" type="text" inputmode="numeric" autocomplete="off" maxlength="11" value="">
+        <span>$</span><input id="casilla" type="text" inputmode="decimal" autocomplete="off" maxlength="16" value="">
       </label>
     </div>
     <div class="ejemplos" id="ejemplos"><span class="et">Probá con:</span></div>
@@ -1394,9 +1397,9 @@ const PARAMETROS = {
     'Fondo propio: aportes durante ' + num(ANIOS_AP) + ' años (' + num(J.meses_acumulacion) + ' meses). Haber calculado con ' + num(P.anios) + ' años de aportes al sistema (PC/PAP = ' + pct(P.tasa_pc, 1) + ' × ' + num(P.anios) + ').',
     'En la modalidad A el capital no se consume. En la modalidad B, el retiro dura ' + num(J.anios_retiro, 1) + ' años según la esperanza de vida de 2020.',
     'Alcanzable: aporte menor al 100% del sueldo neto.',
-    'MEGAQM tiene solo 5 años de historia.',
-    'Inmobiliario: fuera del Excel original. Se calcula con una simulación de compra y alquiler de unidades enteras (precio ' + usd(I.precio_depto_usd) + ', alquiler bruto ' + pct(I.rentabilidad_alquiler_bruta, 2) + ' anual, apreciación real ' + pct(I.apreciacion_real_anual, 2) + ' anual, costos de compra ' + pct(I.costos_compra, 0) + ', comisión de venta ' + pct(I.comision_venta, 0) + '). La modalidad B puede dar hasta 0,07 puntos de % por encima del Word.',
-    'Valores en pesos de ' + J.fecha_datos + ' (Res. ANSES 257/2026). Sin inflación futura ni cambios de ley. El dólar MEP (' + $(MEP) + ') solo se usa para pasar montos a USD.',
+    'MEGAQM: el rendimiento usa una ventana de solo 5 años (2021–2025).',
+    'Inmobiliario: se calcula con una simulación aparte de las fórmulas del Excel, y reproduce al centavo los valores del trabajo. Usa una simulación de compra y alquiler de unidades enteras (precio ' + usd(I.precio_depto_usd) + ', alquiler bruto ' + pct(I.rentabilidad_alquiler_bruta, 2) + ' anual, apreciación real ' + pct(I.apreciacion_real_anual, 2) + ' anual, costos de compra ' + pct(I.costos_compra, 0) + ', comisión de venta ' + pct(I.comision_venta, 0) + ').',
+    'Valores en pesos de ' + J.fecha_datos + ' (Res. ANSES 257/2026). Sin inflación futura ni cambios de ley. El dólar MEP ($' + num(MEP, 2) + ') solo se usa para pasar montos a USD.',
     'El sueldo neto se pasa a bruto invirtiendo el descuento de aportes personales del ' + pct(P.aportes_pers, 0) + ' sobre la base topeada.',
     'El deslizante va de 1 a 80 SMVM netos (' + $(NETO_MIN) + ' a ' + $(NETO_MAX) + '), en escala logarítmica; la casilla acepta cualquier monto.'
   ].map(t => '<li>' + esc(t) + '</li>').join('');
@@ -1410,20 +1413,26 @@ const PARAMETROS = {
   // ---------- eventos ----------
   function ponerNeto(n) { estado.neto = n; casilla.value = num(n); render(); }
   desliz.addEventListener('input', () => ponerNeto(dePos(+desliz.value)));
-  // la casilla acepta cualquier monto; se formatea con puntos mientras se escribe
+  // la casilla acepta cualquier monto; se formatea con puntos mientras se escribe.
+  // Formato argentino: los puntos separan miles y lo que sigue a la coma (centavos) se ignora.
+  const sinMonto = b => document.querySelector('main').classList.toggle('sin-monto', b);
   casilla.addEventListener('input', () => {
-    const pos = casilla.selectionStart || 0, antes = casilla.value.slice(0, pos).replace(/\D/g, '').length;
-    const dig = casilla.value.replace(/\D/g, '').replace(/^0+(?=\d)/, '');
-    casilla.value = dig ? miles(dig) : '';
+    const pos = casilla.selectionStart || 0, coma = casilla.value.indexOf(',');
+    const antes = casilla.value.slice(0, pos).replace(/\D/g, '').length, trasComa = coma >= 0 && pos > coma;
+    const dig = (coma >= 0 ? casilla.value.slice(0, coma) : casilla.value).replace(/\D/g, '').replace(/^0+(?=\d)/, '');
+    const dec = coma >= 0 ? ',' + casilla.value.slice(coma + 1).replace(/\D/g, '') : '';
+    casilla.value = (dig ? miles(dig) : '') + dec;
     let p = 0, vistos = 0;
     while (p < casilla.value.length && vistos < antes) { if (/\d/.test(casilla.value[p])) vistos++; p++; }
+    if (trasComa) p = Math.max(p, casilla.value.indexOf(',') + 1);
     casilla.setSelectionRange(p, p);
     const n = dig ? parseInt(dig, 10) : NaN;
     const nota = el('notaCampo');
-    if (!(n > 0)) { nota.textContent = 'Escribí cuánto cobrás por mes, por ejemplo 1.000.000.'; nota.classList.remove('oculto'); return; }
+    if (!(n > 0)) { nota.textContent = 'Escribí cuánto cobrás por mes, por ejemplo 1.000.000.'; nota.classList.remove('oculto'); sinMonto(true); return; }
+    sinMonto(false);
     estado.neto = n; desliz.value = aPos(n); render();
   });
-  casilla.addEventListener('blur', () => { casilla.value = num(estado.neto); el('notaCampo').classList.toggle('oculto', !(estado.neto < NETO_MIN || estado.neto > NETO_MAX)); });
+  casilla.addEventListener('blur', () => { casilla.value = num(estado.neto); sinMonto(false); el('notaCampo').classList.toggle('oculto', !(estado.neto < NETO_MIN || estado.neto > NETO_MAX)); });
   casilla.addEventListener('keydown', e => { if (e.key === 'Enter') casilla.blur(); });
   el('ejemplos').addEventListener('click', e => { const b = e.target.closest('button'); if (b) { const n = EJEMPLOS[+b.dataset.i].neto; desliz.value = aPos(n); ponerNeto(n); } });
   document.querySelectorAll('input[name=mod]').forEach(r => r.addEventListener('change', () => { estado.mod = r.value; render(); }));
